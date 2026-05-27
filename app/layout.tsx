@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Plus_Jakarta_Sans, DM_Serif_Display } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 
@@ -9,8 +9,16 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   display: 'swap',
 })
 
+const dmSerifDisplay = DM_Serif_Display({
+  weight: ['400'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'Temukan Psikolog',
+  title: 'PsikologDB',
   description:
     'Direktori psikolog dan klinik kesehatan mental Indonesia. Temukan psikolog yang tepat untukmu dengan mudah.',
 }
@@ -21,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="id" className={plusJakartaSans.variable}>
-      <body className="bg-[#faf9f7] min-h-screen font-sans">
+    <html lang="id" className={`${plusJakartaSans.variable} ${dmSerifDisplay.variable}`}>
+      <body className="min-h-screen bg-[#f0f4eb]">
         <Navbar />
         {children}
       </body>

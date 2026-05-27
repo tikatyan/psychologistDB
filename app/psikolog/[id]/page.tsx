@@ -1,15 +1,31 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getPsikolog } from '@/lib/queries'
-import BpjsBadge from '@/components/BpjsBadge'
-import FeeDisplay from '@/components/FeeDisplay'
-import TagList from '@/components/TagList'
-import ContactButtons from '@/components/ContactButtons'
-import CompletenessScore from '@/components/CompletenessScore'
+import type { Psikolog } from '@/lib/types'
 import Link from 'next/link'
 
 interface Props {
   params: Promise<{ id: string }>
+}
+
+function formatRp(n: number) {
+  return 'Rp' + n.toLocaleString('id-ID')
+}
+
+function getFee(p: Psikolog): string | null {
+  const min = p.fee_online_idr_min ?? p.fee_offline_idr_min
+  const max = p.fee_online_idr_max ?? p.fee_offline_idr_max
+  if (min == null && max == null) return null
+  if (min != null && max != null) return `${formatRp(min)} – ${formatRp(max)}`
+  if (min != null) return `Mulai ${formatRp(min)}`
+  return `Mulai ${formatRp(max!)}`
+}
+
+function getInitials(nama: string | null): string {
+  if (!nama) return '?'
+  const words = nama.replace(/[^a-zA-Z\s]/g, '').trim().split(/\s+/)
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase()
+  return (words[0]?.[0] ?? '?').toUpperCase()
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -17,234 +33,325 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await getPsikolog(id)
   if (!p) return { title: 'Psikolog tidak ditemukan' }
   return {
-    title: `${p.nama ?? 'Psikolog'} – Temukan Psikolog`,
+    title: `${p.nama ?? 'Psikolog'} – PsikologDB`,
     description: `Profil psikolog ${p.nama ?? ''}${p.kota ? ` di ${p.kota}` : ''}. ${p.case_focus?.slice(0, 3).join(', ') ?? ''}`,
   }
+}
+
+function SecLabel({ children }: { children: string }) {
+  return (
+    <div className="mb-[13px] text-[11px] font-bold uppercase tracking-[0.1em] text-[#7b6e5c]">
+      {children}
+    </div>
+  )
+}
+
+function Tag({ children, approach = false }: { children: string; approach?: boolean }) {
+  return (
+    <span
+      className={`rounded-[14px] border px-[13px] py-[6px] text-[13px] font-semibold ${
+        approach
+          ? 'border-transparent bg-[#eaf3e5] text-[#396025]'
+          : 'border-[#e5d9c2] bg-[#f3ede0] text-[#19290f]'
+      }`}
+    >
+      {children}
+    </span>
+  )
 }
 
 export default async function PsikologProfilePage({ params }: Props) {
   const { id } = await params
   const p = await getPsikolog(id)
-
   if (!p) notFound()
 
-  const initial = p.nama ? p.nama.charAt(0).toUpperCase() : '?'
+  const initials = getInitials(p.nama)
+  const fee = getFee(p)
+  const bothMode = p.online_available && p.offline_available
+  const modeLabel = bothMode
+    ? 'Online & Offline'
+    : p.online_available
+    ? 'Online'
+    : p.offline_available
+    ? 'Offline'
+    : null
+
+  const ctaHref = p.profile_url ?? (p.instagram_handle ? `https://instagram.com/${p.instagram_handle}` : null)
+  const ctaLabel = p.profile_url ? 'Kunjungi Profil' : p.instagram_handle ? 'Lihat di Instagram' : null
+  const hasCta = !!ctaHref
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10">
-      <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-        {p.photo_url ? (
-          <img
-            src={p.photo_url}
-            alt={p.nama ?? 'Foto psikolog'}
-            className="h-20 w-20 shrink-0 rounded-full object-cover border-2 border-[#e8e3dc]"
-          />
-        ) : (
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#e8f3ee] text-3xl font-bold text-[#4d8b6f]">
-            {initial}
-          </div>
-        )}
-        <div className="flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold text-[#2c2c2c]">
+    <div className={`min-h-screen bg-[#faf7f0]${hasCta ? ' pb-[84px]' : ''}`}>
+
+      {/* Forest green header + hero */}
+      <div className="bg-[#1e3d12]">
+        <div className="mx-auto flex max-w-5xl items-center gap-[10px] px-5 py-[10px]">
+          <Link
+            href="/cari"
+            className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-white/15 text-[16px] font-semibold text-white no-underline transition hover:bg-white/25"
+            aria-label="Kembali ke pencarian"
+          >
+            ←
+          </Link>
+          <span className="flex-1 text-[14px] font-semibold text-white/70">Profil Psikolog</span>
+        </div>
+
+        {/* Cream hero card */}
+        <div className="mx-auto max-w-5xl px-4">
+          <div className="rounded-t-[24px] bg-[#faf7f0] px-6 pb-6 pt-0 text-center">
+            {/* Avatar — pulled up */}
+            <div className="flex justify-center">
+              {p.photo_url ? (
+                <img
+                  src={p.photo_url}
+                  alt={p.nama ?? ''}
+                  className="mt-[-48px] h-24 w-24 rounded-full border-4 border-[#faf7f0] object-cover"
+                />
+              ) : (
+                <div className="mt-[-48px] flex h-24 w-24 items-center justify-center rounded-full border-4 border-[#faf7f0] bg-[#396025]">
+                  <span className="font-serif text-[28px] italic leading-none tracking-tight text-[#9ec485]">
+                    {initials}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <h1 className="mb-[2px] mt-[14px] font-serif text-[26px] leading-snug tracking-tight text-[#19290f]">
               {p.nama ?? 'Nama tidak tersedia'}
             </h1>
-            {p.gender === 'Perempuan' && (
-              <span className="text-[#d97454]" title="Perempuan">♀</span>
+            {p.gelar && (
+              <p className="mb-[8px] text-[13px] font-medium text-[#7b6e5c]">{p.gelar}</p>
             )}
-            {p.gender === 'Laki-laki' && (
-              <span className="text-[#6b6568]" title="Laki-laki">♂</span>
+
+            {/* Social links */}
+            {(p.instagram_handle || p.profile_url) && (
+              <div className="mb-[14px] flex items-center justify-center gap-1">
+                {p.instagram_handle && (
+                  <a
+                    href={`https://instagram.com/${p.instagram_handle}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-[5px] rounded-full bg-[#eaf3e5] px-[10px] py-[3px] text-[12px] font-semibold text-[#396025] no-underline transition hover:bg-[#e5d9c2]"
+                  >
+                    Instagram
+                  </a>
+                )}
+                {p.instagram_handle && p.profile_url && (
+                  <span className="text-[11px] text-[#d4c5a8]">·</span>
+                )}
+                {p.profile_url && (
+                  <a
+                    href={p.profile_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-[5px] rounded-full bg-[#eaf3e5] px-[10px] py-[3px] text-[12px] font-semibold text-[#396025] no-underline transition hover:bg-[#e5d9c2]"
+                  >
+                    Website
+                  </a>
+                )}
+              </div>
             )}
-          </div>
-          {p.gelar && <p className="text-[#6b6568]">{p.gelar}</p>}
-          {p.kota && (
-            <span className="mt-1 inline-block badge bg-[#fdf0eb] text-[#d97454]">
-              {p.kota}
-            </span>
-          )}
-          {p.data_completeness_score != null && (
-            <div className="mt-2">
-              <CompletenessScore score={p.data_completeness_score} />
+
+            {/* Badges */}
+            <div className="flex flex-wrap justify-center gap-[6px]">
+              {p.kota && (
+                <span className="rounded-full border border-[#e5d9c2] bg-[#f3ede0] px-[11px] py-[4px] text-[12px] font-bold text-[#8c6d4f]">
+                  {p.kota}
+                </span>
+              )}
+              {modeLabel && (
+                <span className="rounded-full bg-[#e0eef5] px-[11px] py-[4px] text-[12px] font-bold text-[#5a89a0]">
+                  {modeLabel}
+                </span>
+              )}
+              {p.bpjs_accepted === true && (
+                <span className="rounded-full bg-[#eaf3e5] px-[11px] py-[4px] text-[12px] font-bold text-[#396025]">
+                  Ditanggung BPJS ✓
+                </span>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="space-y-5">
-          <div className="card">
-            <h2 className="section-label mb-3">Kontak & Biaya</h2>
-            <div className="space-y-4">
-              <FeeDisplay
-                onlineMin={p.fee_online_idr_min}
-                onlineMax={p.fee_online_idr_max}
-                offlineMin={p.fee_offline_idr_min}
-                offlineMax={p.fee_offline_idr_max}
-              />
-              {p.session_duration_minutes && (
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-[#6b6568]">Durasi sesi:</span>
-                  <span className="font-medium text-[#2c2c2c]">{p.session_duration_minutes} menit</span>
-                </div>
-              )}
-              <div className="flex flex-wrap gap-2">
-                <BpjsBadge accepted={p.bpjs_accepted} />
-                {p.first_timer_welcome && (
-                  <span className="badge bg-[#e8f3ee] text-[#4d8b6f]">
-                    Ramah untuk pertama kali
-                  </span>
-                )}
-              </div>
+      {/* Scrollable sections */}
+      <div className="mx-auto max-w-5xl">
+
+        {/* Spesialisasi */}
+        {p.case_focus && p.case_focus.length > 0 && (
+          <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
+            <SecLabel>Spesialisasi</SecLabel>
+            <div className="flex flex-wrap gap-[7px]">
+              {p.case_focus.map((t) => <Tag key={t}>{t}</Tag>)}
             </div>
           </div>
+        )}
 
-          <div className="card">
-            <h2 className="section-label mb-3">Format Layanan</h2>
-            <div className="space-y-3">
-              <div className="flex flex-wrap gap-1.5">
-                {p.online_available && (
-                  <span className="badge bg-[#e8f3ee] text-[#4d8b6f]">Tersedia Online</span>
-                )}
-                {p.offline_available && (
-                  <span className="badge bg-[#f0ede8] text-[#6b6568]">Tersedia Offline</span>
-                )}
-              </div>
+        {/* Pendekatan Terapi */}
+        {p.therapeutic_approach && p.therapeutic_approach.length > 0 && (
+          <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
+            <SecLabel>Pendekatan Terapi</SecLabel>
+            <div className="flex flex-wrap gap-[7px]">
+              {p.therapeutic_approach.map((t) => <Tag key={t} approach>{t}</Tag>)}
+            </div>
+          </div>
+        )}
+
+        {/* Info Sesi */}
+        {(fee || modeLabel || p.session_format || p.age_range_handled || p.session_duration_minutes) && (
+          <div className="border-t border-[#e5d9c2] bg-[#f3ede0] px-6 py-5">
+            <SecLabel>Info Sesi</SecLabel>
+            <div>
+              {fee && (
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Biaya</span>
+                  <span className="font-serif text-[18px] leading-none tracking-tight text-[#1e3d12]">{fee}</span>
+                </div>
+              )}
+              {modeLabel && (
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Format sesi</span>
+                  <span className="text-[14px] font-semibold text-[#19290f]">{modeLabel}</span>
+                </div>
+              )}
               {p.session_format && p.session_format.length > 0 && (
-                <TagList tags={p.session_format} />
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Tipe konseling</span>
+                  <span className="text-[14px] font-semibold text-[#19290f] text-right">{p.session_format.join(' · ')}</span>
+                </div>
               )}
-              {p.language && p.language.length > 0 && (
-                <div>
-                  <p className="mb-1 text-xs text-[#6b6568]">Bahasa</p>
-                  <TagList tags={p.language} colorClass="bg-[#f0ede8] text-[#6b6568]" />
+              {p.age_range_handled && p.age_range_handled.length > 0 && (
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Rentang usia</span>
+                  <span className="text-[14px] font-semibold text-[#19290f] text-right">{p.age_range_handled.join(', ')}</span>
+                </div>
+              )}
+              {p.session_duration_minutes && (
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Durasi sesi</span>
+                  <span className="text-[14px] font-semibold text-[#19290f]">{p.session_duration_minutes} menit</span>
+                </div>
+              )}
+              {p.first_timer_welcome && (
+                <div className="flex items-baseline justify-between gap-4 py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Klien baru</span>
+                  <span className="rounded-full bg-[#eaf3e5] px-[9px] py-[2px] text-[12px] font-bold text-[#396025]">✓ Ya</span>
                 </div>
               )}
             </div>
           </div>
+        )}
 
-          <div className="card">
-            <h2 className="section-label mb-3">Pengalaman & Sertifikasi</h2>
-            <div className="space-y-2 text-sm">
-              {p.years_of_experience != null && (
-                <div className="flex items-center gap-2">
-                  <span className="text-[#6b6568]">Pengalaman:</span>
-                  <span className="font-medium">{p.years_of_experience} tahun</span>
-                </div>
-              )}
-              {p.hands_on_hours != null && (
-                <div className="flex items-center gap-2">
-                  <span className="text-[#6b6568]">Jam praktik:</span>
-                  <span className="font-medium">{p.hands_on_hours.toLocaleString('id-ID')} jam</span>
+        {/* Pengalaman & Kredensial */}
+        {(p.years_of_experience || p.sippk_status || p.himpsi_member || p.ipk_member || p.education?.length) && (
+          <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
+            <SecLabel>Pengalaman & Kredensial</SecLabel>
+            <div>
+              {p.years_of_experience && (
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Pengalaman</span>
+                  <span className="text-[14px] font-semibold text-[#19290f]">{p.years_of_experience} tahun</span>
                 </div>
               )}
               {p.sippk_status && (
-                <div className="flex items-center gap-2">
-                  <span className="text-[#6b6568]">SIPPK:</span>
-                  <span className="font-medium">{p.sippk_status}</span>
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">SIPPK</span>
+                  <span className="text-[14px] font-semibold text-[#19290f]">{p.sippk_status}</span>
                 </div>
               )}
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {p.himpsi_member && (
-                  <span className="badge bg-[#e8f3ee] text-[#4d8b6f]">Anggota HIMPSI</span>
-                )}
-                {p.ipk_member && (
-                  <span className="badge bg-[#e8f3ee] text-[#4d8b6f]">Anggota IPK</span>
-                )}
-              </div>
+              {(p.himpsi_member || p.ipk_member) && (
+                <div className="flex items-baseline justify-between gap-4 border-b border-[#e5d9c2] py-[9px]">
+                  <span className="shrink-0 text-[13px] text-[#7b6e5c]">Keanggotaan</span>
+                  <div className="flex gap-[5px]">
+                    {p.himpsi_member && <span className="rounded-full bg-[#eaf3e5] px-[9px] py-[2px] text-[12px] font-bold text-[#396025]">HIMPSI</span>}
+                    {p.ipk_member && <span className="rounded-full bg-[#eaf3e5] px-[9px] py-[2px] text-[12px] font-bold text-[#396025]">IPK</span>}
+                  </div>
+                </div>
+              )}
+              {p.education && p.education.length > 0 && (
+                <div className="py-[9px]">
+                  <span className="mb-2 block text-[13px] text-[#7b6e5c]">Pendidikan</span>
+                  <ul className="space-y-1">
+                    {p.education.map((edu, i) => (
+                      <li key={i} className="text-[13px] text-[#19290f]">{edu}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-
-        <div className="space-y-5">
-          {p.case_focus && p.case_focus.length > 0 && (
-            <div className="card">
-              <h2 className="section-label mb-3">Fokus Kasus</h2>
-              <TagList tags={p.case_focus} maxShow={10} />
-            </div>
-          )}
-
-          {p.therapeutic_approach && p.therapeutic_approach.length > 0 && (
-            <div className="card">
-              <h2 className="section-label mb-3">Pendekatan Terapi</h2>
-              <TagList tags={p.therapeutic_approach} colorClass="bg-[#fdf0eb] text-[#d97454]" maxShow={10} />
-            </div>
-          )}
-
-          {p.age_range_handled && p.age_range_handled.length > 0 && (
-            <div className="card">
-              <h2 className="section-label mb-3">Rentang Usia yang Ditangani</h2>
-              <TagList tags={p.age_range_handled} colorClass="bg-[#f0ede8] text-[#6b6568]" maxShow={10} />
-            </div>
-          )}
-
-          {p.education && p.education.length > 0 && (
-            <div className="card">
-              <h2 className="section-label mb-3">Pendidikan</h2>
-              <ul className="space-y-1">
-                {p.education.map((edu, i) => (
-                  <li key={i} className="text-sm text-[#2c2c2c]">
-                    {edu}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {p.platform_presence && p.platform_presence.length > 0 && (
-            <div className="card">
-              <h2 className="section-label mb-3">Platform</h2>
-              <TagList tags={p.platform_presence} colorClass="bg-[#f0ede8] text-[#6b6568]" />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {p.clinic_ids && p.clinic_ids.length > 0 && (
-        <div className="mt-6 card">
-          <h2 className="section-label mb-3">Klinik / Tempat Praktik</h2>
-          <div className="flex flex-wrap gap-2">
-            {p.clinic_ids.map((cid, i) => (
-              <Link
-                key={cid}
-                href={`/klinik/${cid}`}
-                className="rounded-xl border border-[#e8e3dc] bg-white px-3 py-1.5 text-sm font-medium text-[#4d8b6f] transition hover:border-[#4d8b6f]"
-              >
-                {p.clinic_names?.[i] ?? cid}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="mt-6 card">
-        <h2 className="section-label mb-3">Hubungi</h2>
-        <ContactButtons
-          wa={undefined}
-          instagram={p.instagram_handle}
-          website={p.profile_url}
-          telepon={undefined}
-        />
-        {!p.instagram_handle && !p.profile_url && (
-          <p className="text-sm text-[#6b6568]">
-            Informasi kontak belum tersedia. Coba cari melalui klinik atau platform di atas.
-          </p>
         )}
+
+        {/* Tempat Praktik */}
+        {p.clinic_ids && p.clinic_ids.length > 0 && (
+          <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
+            <SecLabel>Tempat Praktik</SecLabel>
+            <div className="space-y-[10px]">
+              {p.clinic_ids.map((cid, i) => (
+                <div key={cid} className="rounded-[14px] border-[1.5px] border-[#e5d9c2] bg-[#f3ede0] p-4">
+                  <div className="mb-2 text-[15px] font-bold text-[#19290f]">
+                    {p.clinic_names?.[i] ?? 'Klinik'}
+                  </div>
+                  <Link
+                    href={`/klinik/${cid}`}
+                    className="rounded-full border-[1.5px] border-[#e5d9c2] bg-[#faf7f0] px-[14px] py-[6px] text-[12px] font-bold text-[#1e3d12] no-underline transition hover:bg-[#1e3d12] hover:text-white"
+                  >
+                    Lihat Klinik →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Platform */}
+        {p.platform_presence && p.platform_presence.length > 0 && (
+          <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
+            <SecLabel>Tersedia di Platform</SecLabel>
+            <div>
+              {p.platform_presence.map((platform) => (
+                <div
+                  key={platform}
+                  className="flex items-center gap-[13px] border-b border-[#e5d9c2] py-[11px] last:border-b-0 last:pb-0"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] bg-[#e5d9c2] text-[11px] font-extrabold text-[#7b6e5c]">
+                    {platform.slice(0, 2).toUpperCase()}
+                  </div>
+                  <span className="flex-1 text-[14px] font-bold text-[#19290f]">{platform}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Completeness note */}
+        <div className="border-t border-[#e5d9c2] bg-[#f3ede0] px-6 py-4 text-center">
+          <p className="text-[13px] leading-relaxed text-[#7b6e5c]">
+            Profil ini belum lengkap atau perlu diperbarui?{' '}
+            <Link
+              href="/tambahkan"
+              className="border-b border-[#527a3a] pb-px font-bold text-[#396025] no-underline transition hover:text-[#1e3d12]"
+            >
+              Bantu lengkapi
+            </Link>
+          </p>
+        </div>
+
       </div>
 
-      {p.notes && (
-        <div className="mt-6 rounded-2xl border border-[#e8e3dc] bg-[#faf9f7] p-5">
-          <p className="section-label mb-2">Catatan</p>
-          <p className="text-sm text-[#6b6568]">{p.notes}</p>
+      {/* Fixed bottom CTA */}
+      {hasCta && ctaHref && ctaLabel && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#e5d9c2] bg-[#faf7f0] px-5 py-3">
+          <a
+            href={ctaHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full rounded-full bg-[#1e3d12] py-[15px] text-center text-[15px] font-bold text-white no-underline transition hover:bg-[#396025]"
+          >
+            {ctaLabel}
+          </a>
         </div>
       )}
-
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#e8e3dc] bg-white p-5">
-        <p className="text-sm text-[#6b6568]">
-          Data ini belum lengkap atau perlu diperbarui?
-        </p>
-        <Link href="/tambahkan" className="btn-outline text-sm">
-          Bantu lengkapi data ini
-        </Link>
-      </div>
-    </main>
+    </div>
   )
 }

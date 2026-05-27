@@ -15,13 +15,13 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-[#e8e3dc] bg-white/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+    <nav className="sticky top-0 z-50 border-b border-[#e5d9c2] bg-[#f3ede0]/95 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-3">
         <Link
           href="/"
-          className="text-base font-bold text-[#4d8b6f] hover:text-[#3a6e57] transition-colors"
+          className="font-serif text-xl leading-none text-[#1e3d12] transition-colors hover:text-[#396025]"
         >
-          Temukan Psikolog
+          PsikologDB
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -29,10 +29,10 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
                 pathname.startsWith(link.href)
-                  ? 'bg-[#e8f3ee] text-[#4d8b6f]'
-                  : 'text-[#6b6568] hover:text-[#2c2c2c]'
+                  ? 'bg-[#1e3d12] text-white'
+                  : 'text-[#7b6e5c] hover:text-[#19290f]'
               }`}
             >
               {link.label}
@@ -41,7 +41,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#e8e3dc] md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#e5d9c2] text-[#7b6e5c] md:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Menu"
         >
@@ -61,16 +61,16 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-[#e8e3dc] bg-white px-4 pb-3 md:hidden">
+        <div className="border-t border-[#e5d9c2] bg-[#f3ede0] px-5 pb-3 md:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setOpen(false)}
-              className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+              className={`block rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
                 pathname.startsWith(link.href)
-                  ? 'text-[#4d8b6f]'
-                  : 'text-[#6b6568] hover:text-[#2c2c2c]'
+                  ? 'text-[#1e3d12]'
+                  : 'text-[#7b6e5c] hover:text-[#19290f]'
               }`}
             >
               {link.label}

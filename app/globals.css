@@ -1,39 +1,48 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #faf9f7;
-  --color-sage: #4d8b6f;
-  --color-sage-light: #e8f3ee;
-  --color-sage-dark: #3a6e57;
-  --color-terra: #d97454;
-  --color-terra-light: #fdf0eb;
-  --color-border: #e8e3dc;
-  --color-muted: #6b6568;
-  --color-surface: #ffffff;
+  --color-forest:      #1e3d12;
+  --color-forest-mid:  #396025;
+  --color-forest-lite: #527a3a;
+  --color-sage:        #6b9455;
+  --color-leaf:        #9ec485;
+  --color-leaf-bg:     #eaf3e5;
+  --color-sand:        #f3ede0;
+  --color-sand-mid:    #e5d9c2;
+  --color-sand-deep:   #d4c5a8;
+  --color-cream:       #faf7f0;
+  --color-content:     #f0f4eb;
+  --color-bark:        #8c6d4f;
+  --color-sky:         #5a89a0;
+  --color-sky-bg:      #e0eef5;
+  --color-text:        #19290f;
+  --color-muted:       #7b6e5c;
+  --color-muted-bg:    #ede8de;
 
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-serif: "DM Serif Display", Georgia, serif;
 }
 
 body {
-  background-color: var(--color-cream);
-  color: #2c2c2c;
+  background-color: #f0f4eb;
+  color: #19290f;
   font-family: var(--font-sans);
 }
 
 @layer utilities {
   .badge {
-    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
   }
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-xl bg-[#4d8b6f] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3a6e57] active:scale-95;
+    @apply inline-flex items-center gap-2 rounded-full bg-[#1e3d12] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#396025] active:scale-95;
   }
   .btn-outline {
-    @apply inline-flex items-center gap-2 rounded-xl border border-[#e8e3dc] bg-white px-4 py-2.5 text-sm font-medium text-[#2c2c2c] transition hover:border-[#4d8b6f] hover:text-[#4d8b6f] active:scale-95;
+    @apply inline-flex items-center gap-2 rounded-full border border-[#e5d9c2] bg-white px-5 py-3 text-sm font-semibold text-[#1e3d12] transition hover:border-[#1e3d12] active:scale-95;
   }
   .card {
-    @apply rounded-2xl border border-[#e8e3dc] bg-white p-5 shadow-sm transition hover:shadow-md;
+    @apply rounded-2xl border border-[#e5d9c2] bg-white p-5 shadow-sm transition hover:shadow-md;
   }
   .section-label {
-    @apply text-xs font-semibold uppercase tracking-widest text-[#6b6568];
+    @apply text-xs font-bold uppercase tracking-widest text-[#7b6e5c];
   }
 }

@@ -1,6 +1,8 @@
+import Link from 'next/link'
 import { searchDirectory, getKotaList } from '@/lib/queries'
 import PsikologCard from '@/components/PsikologCard'
 import ClinicCard from '@/components/ClinicCard'
+import FilterSheet from '@/components/FilterSheet'
 
 interface SearchParams {
   q?: string
@@ -9,10 +11,6 @@ interface SearchParams {
   offline?: string
   bpjs?: string
   focus?: string
-  approach?: string
-  ageRange?: string
-  format?: string
-  feeMax?: string
   type?: string
 }
 
@@ -28,7 +26,6 @@ export default async function CariPage({
   const online = sp.online === 'true'
   const offline = sp.offline === 'true'
   const bpjs = sp.bpjs === 'true'
-  const feeMax = sp.feeMax ? parseInt(sp.feeMax) : undefined
 
   const { psikolog, clinics } = await searchDirectory({
     q: sp.q,
@@ -37,191 +34,135 @@ export default async function CariPage({
     offline: offline || undefined,
     bpjs: bpjs || undefined,
     focus: sp.focus,
-    approach: sp.approach,
-    ageRange: sp.ageRange,
-    format: sp.format,
-    feeMax,
     type,
   })
 
   const showPsikolog = type === 'psikolog' || type === 'semua'
   const showKlinik = type === 'klinik' || type === 'semua'
-  const totalResults = (showPsikolog ? psikolog.length : 0) + (showKlinik ? clinics.length : 0)
+  const totalResults =
+    (showPsikolog ? psikolog.length : 0) + (showKlinik ? clinics.length : 0)
 
-  function buildParams(overrides: Record<string, string | undefined>) {
-    const params = new URLSearchParams()
-    const base: Record<string, string | undefined> = {
-      q: sp.q,
-      kota: sp.kota,
-      online: sp.online,
-      offline: sp.offline,
-      bpjs: sp.bpjs,
-      focus: sp.focus,
-      approach: sp.approach,
-      ageRange: sp.ageRange,
-      format: sp.format,
-      feeMax: sp.feeMax,
-      type: sp.type,
-      ...overrides,
-    }
-    for (const [k, v] of Object.entries(base)) {
-      if (v) params.set(k, v)
-    }
-    return params.toString()
+  function urlWithout(key: string) {
+    const p = new URLSearchParams()
+    if (sp.q && key !== 'q') p.set('q', sp.q)
+    if (sp.kota && key !== 'kota') p.set('kota', sp.kota)
+    if (sp.online && key !== 'online') p.set('online', sp.online)
+    if (sp.offline && key !== 'offline') p.set('offline', sp.offline)
+    if (sp.bpjs && key !== 'bpjs') p.set('bpjs', sp.bpjs)
+    if (sp.focus && key !== 'focus') p.set('focus', sp.focus)
+    if (sp.type && key !== 'type') p.set('type', sp.type)
+    const qs = p.toString()
+    return `/cari${qs ? '?' + qs : ''}`
   }
 
+  const activeChips: { label: string; removeUrl: string }[] = []
+  if (sp.kota) activeChips.push({ label: sp.kota, removeUrl: urlWithout('kota') })
+  if (online) activeChips.push({ label: 'Online', removeUrl: urlWithout('online') })
+  if (offline) activeChips.push({ label: 'Offline', removeUrl: urlWithout('offline') })
+  if (bpjs) activeChips.push({ label: 'Ditanggung BPJS', removeUrl: urlWithout('bpjs') })
+  if (sp.focus) activeChips.push({ label: sp.focus, removeUrl: urlWithout('focus') })
+
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <form action="/cari" method="GET" className="mb-6">
-        {sp.kota && <input type="hidden" name="kota" value={sp.kota} />}
-        {sp.online && <input type="hidden" name="online" value={sp.online} />}
-        {sp.offline && <input type="hidden" name="offline" value={sp.offline} />}
-        {sp.bpjs && <input type="hidden" name="bpjs" value={sp.bpjs} />}
-        {sp.type && <input type="hidden" name="type" value={sp.type} />}
-        <div className="flex overflow-hidden rounded-2xl border border-[#e8e3dc] bg-white shadow-sm focus-within:border-[#4d8b6f] focus-within:ring-2 focus-within:ring-[#4d8b6f]/20">
-          <input
-            name="q"
-            type="text"
-            defaultValue={sp.q}
-            placeholder="Cari psikolog, kota, atau spesialisasi..."
-            className="flex-1 bg-transparent px-4 py-3.5 text-sm outline-none placeholder:text-[#6b6568]"
+    <div className="min-h-screen bg-[#faf7f0]">
+      {/* Directory header — sticks below the global Navbar */}
+      <div className="sticky top-[53px] z-40 border-b border-[#e5d9c2] bg-[#f3ede0]">
+        {/* Nav row */}
+        <div className="mx-auto flex max-w-5xl items-center gap-[10px] px-5 pb-2 pt-[10px]">
+          <Link
+            href="/"
+            className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-[#e5d9c2] text-[16px] font-semibold text-[#1e3d12] no-underline transition hover:bg-[#d4c5a8]"
+            aria-label="Kembali ke beranda"
+          >
+            ←
+          </Link>
+          <span className="flex-1 font-serif text-[20px] leading-none tracking-tight text-[#1e3d12]">
+            Cari Psikolog
+          </span>
+          <FilterSheet
+            kotaList={kotaList}
+            currentKota={sp.kota}
+            currentOnline={online}
+            currentOffline={offline}
+            currentBpjs={bpjs}
+            currentFocus={sp.focus}
+            currentQ={sp.q}
+            totalResults={totalResults}
           />
-          <button
-            type="submit"
-            className="m-1.5 rounded-xl bg-[#4d8b6f] px-5 py-2 text-sm font-semibold text-white transition hover:bg-[#3a6e57]"
-          >
-            Cari
-          </button>
-        </div>
-      </form>
-
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        <div className="flex rounded-xl border border-[#e8e3dc] bg-white overflow-hidden">
-          {(['semua', 'psikolog', 'klinik'] as const).map((t) => (
-            <a
-              key={t}
-              href={`/cari?${buildParams({ type: t })}`}
-              className={`px-4 py-2 text-sm font-medium capitalize transition ${
-                (sp.type ?? 'semua') === t
-                  ? 'bg-[#4d8b6f] text-white'
-                  : 'text-[#6b6568] hover:text-[#2c2c2c]'
-              }`}
-            >
-              {t === 'semua' ? 'Semua' : t === 'psikolog' ? 'Psikolog' : 'Klinik'}
-            </a>
-          ))}
         </div>
 
-        <form action="/cari" method="GET" className="flex items-center gap-2">
-          {sp.q && <input type="hidden" name="q" value={sp.q} />}
-          {sp.online && <input type="hidden" name="online" value={sp.online} />}
-          {sp.offline && <input type="hidden" name="offline" value={sp.offline} />}
-          {sp.bpjs && <input type="hidden" name="bpjs" value={sp.bpjs} />}
-          {sp.type && <input type="hidden" name="type" value={sp.type} />}
-          <select
-            name="kota"
-            defaultValue={sp.kota ?? ''}
-            className="rounded-xl border border-[#e8e3dc] bg-white px-3 py-2 text-sm text-[#2c2c2c] outline-none focus:border-[#4d8b6f]"
-            onChange={undefined}
-          >
-            <option value="">Semua kota</option>
-            {kotaList.map((k) => (
-              <option key={k} value={k}>
-                {k}
-              </option>
+        {/* Search form */}
+        <div className="mx-auto max-w-5xl px-5 pb-[10px]">
+          <form action="/cari" method="GET" className="relative">
+            {sp.kota && <input type="hidden" name="kota" value={sp.kota} />}
+            {sp.online && <input type="hidden" name="online" value={sp.online} />}
+            {sp.offline && <input type="hidden" name="offline" value={sp.offline} />}
+            {sp.bpjs && <input type="hidden" name="bpjs" value={sp.bpjs} />}
+            {sp.focus && <input type="hidden" name="focus" value={sp.focus} />}
+            <span className="pointer-events-none absolute left-[16px] top-1/2 -translate-y-1/2 text-[#7b6e5c]">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+            </span>
+            <input
+              name="q"
+              type="search"
+              defaultValue={sp.q}
+              placeholder="Nama, kota, atau spesialisasi..."
+              className="w-full rounded-full border-[1.5px] border-[#e5d9c2] bg-[#faf7f0] py-[11px] pl-[42px] pr-[18px] font-sans text-[14px] text-[#19290f] outline-none transition placeholder:text-[#7b6e5c] focus:border-[#396025]"
+            />
+          </form>
+        </div>
+
+        {/* Active filter chips */}
+        {activeChips.length > 0 && (
+          <div className="mx-auto flex max-w-5xl gap-[7px] overflow-x-auto px-5 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {activeChips.map((chip) => (
+              <Link
+                key={chip.label}
+                href={chip.removeUrl}
+                className="inline-flex shrink-0 items-center gap-[5px] rounded-full border-[1.5px] border-[#1e3d12] bg-[#1e3d12] px-3 py-[5px] text-[13px] font-semibold text-white no-underline"
+              >
+                {chip.label}
+                <span className="text-[12px] opacity-75">✕</span>
+              </Link>
             ))}
-          </select>
-          <button type="submit" className="rounded-xl border border-[#e8e3dc] bg-white px-3 py-2 text-sm text-[#6b6568] hover:text-[#2c2c2c]">
-            Terapkan
-          </button>
-        </form>
-
-        <div className="flex gap-2">
-          <a
-            href={`/cari?${buildParams({ online: online ? undefined : 'true' })}`}
-            className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-              online
-                ? 'border-[#4d8b6f] bg-[#e8f3ee] text-[#4d8b6f]'
-                : 'border-[#e8e3dc] bg-white text-[#6b6568] hover:text-[#2c2c2c]'
-            }`}
-          >
-            Online
-          </a>
-          <a
-            href={`/cari?${buildParams({ offline: offline ? undefined : 'true' })}`}
-            className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-              offline
-                ? 'border-[#4d8b6f] bg-[#e8f3ee] text-[#4d8b6f]'
-                : 'border-[#e8e3dc] bg-white text-[#6b6568] hover:text-[#2c2c2c]'
-            }`}
-          >
-            Offline
-          </a>
-          <a
-            href={`/cari?${buildParams({ bpjs: bpjs ? undefined : 'true' })}`}
-            className={`rounded-xl border px-3 py-2 text-sm font-medium transition ${
-              bpjs
-                ? 'border-[#4d8b6f] bg-[#e8f3ee] text-[#4d8b6f]'
-                : 'border-[#e8e3dc] bg-white text-[#6b6568] hover:text-[#2c2c2c]'
-            }`}
-          >
-            BPJS
-          </a>
-        </div>
+          </div>
+        )}
       </div>
 
-      <p className="mb-4 text-sm text-[#6b6568]">
-        {totalResults > 0
-          ? `${totalResults} hasil ditemukan`
-          : 'Belum ada hasil ditemukan'}
-      </p>
-
-      {totalResults === 0 ? (
-        <div className="rounded-2xl border border-[#e8e3dc] bg-white py-16 text-center">
-          <div className="mb-3 text-4xl">🔍</div>
-          <h3 className="mb-2 font-semibold text-[#2c2c2c]">
-            Belum ada hasil untuk pencarianmu
-          </h3>
-          <p className="mb-6 text-sm text-[#6b6568]">
-            Coba ubah filter atau tambahkan psikolog baru ke direktori ini.
-          </p>
-          <a href="/tambahkan" className="btn-primary">
-            Tambahkan psikolog baru
-          </a>
+      {/* Results */}
+      <div className="mx-auto max-w-5xl px-4 py-4">
+        <div className="mb-3 px-1 text-[13px] font-medium text-[#7b6e5c]">
+          {totalResults > 0
+            ? `${totalResults} psikolog & klinik ditemukan`
+            : 'Belum ada hasil ditemukan'}
         </div>
-      ) : (
-        <div className="space-y-8">
-          {showPsikolog && psikolog.length > 0 && (
-            <div>
-              {type === 'semua' && (
-                <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-[#6b6568]">
-                  Psikolog ({psikolog.length})
-                </h2>
-              )}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {psikolog.map((p) => (
-                  <PsikologCard key={p.id} psikolog={p} />
-                ))}
-              </div>
-            </div>
-          )}
 
-          {showKlinik && clinics.length > 0 && (
-            <div>
-              {type === 'semua' && (
-                <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-[#6b6568]">
-                  Klinik & Layanan ({clinics.length})
-                </h2>
-              )}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {clinics.map((c) => (
-                  <ClinicCard key={c.id} clinic={c} />
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </main>
+        {totalResults === 0 ? (
+          <div className="rounded-[20px] border border-[#e5d9c2] bg-white px-6 py-16 text-center">
+            <p className="mb-2 text-[15px] font-bold text-[#19290f]">Belum ada hasil</p>
+            <p className="mb-6 text-[13px] text-[#7b6e5c]">
+              Coba ubah filter atau tambahkan psikolog baru ke direktori.
+            </p>
+            <Link
+              href="/tambahkan"
+              className="inline-flex rounded-full bg-[#1e3d12] px-5 py-3 text-[14px] font-bold text-white no-underline transition hover:bg-[#396025]"
+            >
+              Tambahkan psikolog
+            </Link>
+          </div>
+        ) : (
+          <div className="grid gap-[10px] sm:grid-cols-2 lg:grid-cols-3">
+            {showPsikolog && psikolog.map((p) => (
+              <PsikologCard key={p.id} psikolog={p} />
+            ))}
+            {showKlinik && clinics.map((c) => (
+              <ClinicCard key={c.id} clinic={c} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
