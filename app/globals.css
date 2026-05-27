@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf9f7;
+  --color-sage: #4d8b6f;
+  --color-sage-light: #e8f3ee;
+  --color-sage-dark: #3a6e57;
+  --color-terra: #d97454;
+  --color-terra-light: #fdf0eb;
+  --color-border: #e8e3dc;
+  --color-muted: #6b6568;
+  --color-surface: #ffffff;
+
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: #2c2c2c;
+  font-family: var(--font-sans);
+}
+
+@layer utilities {
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-xl bg-[#4d8b6f] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3a6e57] active:scale-95;
+  }
+  .btn-outline {
+    @apply inline-flex items-center gap-2 rounded-xl border border-[#e8e3dc] bg-white px-4 py-2.5 text-sm font-medium text-[#2c2c2c] transition hover:border-[#4d8b6f] hover:text-[#4d8b6f] active:scale-95;
+  }
+  .card {
+    @apply rounded-2xl border border-[#e8e3dc] bg-white p-5 shadow-sm transition hover:shadow-md;
+  }
+  .section-label {
+    @apply text-xs font-semibold uppercase tracking-widest text-[#6b6568];
+  }
+}

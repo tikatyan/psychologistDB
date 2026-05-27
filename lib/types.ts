@@ -1,0 +1,68 @@
+export interface Psikolog {
+  id: string
+  nama: string | null
+  gelar: string | null
+  gender: string | null
+  clinic_ids: string[] | null
+  clinic_names: string[] | null
+  kota: string | null
+  online_available: boolean | null
+  offline_available: boolean | null
+  case_focus: string[] | null
+  therapeutic_approach: string[] | null
+  age_range_handled: string[] | null
+  session_format: string[] | null
+  language: string[] | null
+  years_of_experience: number | null
+  hands_on_hours: number | null
+  fee_offline_idr_min: number | null
+  fee_offline_idr_max: number | null
+  fee_online_idr_min: number | null
+  fee_online_idr_max: number | null
+  session_duration_minutes: number | null
+  bpjs_accepted: boolean | null
+  first_timer_welcome: boolean | null
+  sippk_status: string | null
+  himpsi_member: boolean | null
+  ipk_member: boolean | null
+  education: string[] | null
+  photo_url: string | null
+  profile_url: string | null
+  platform_presence: string[] | null
+  instagram_handle: string | null
+  notes: string | null
+  data_source: string | null
+  data_completeness_score: number | null
+  last_verified: string | null
+}
+
+export interface Clinic {
+  id: string
+  nama: string | null
+  tipe: string | null
+  kota: string | null
+  area: string | null
+  alamat: string | null
+  telepon: string | null
+  email: string | null
+  website: string | null
+  instagram: string | null
+  wa_number: string | null
+  gmaps_link: string | null
+  online_available: boolean | null
+  offline_available: boolean | null
+  bpjs_accepted: boolean | null
+  focus: string[] | null
+  fee_online_idr_min: number | null
+  fee_online_idr_max: number | null
+  fee_offline_idr_min: number | null
+  fee_offline_idr_max: number | null
+  session_duration_minutes: number | null
+  jam_operasional: string | null
+  instagram_followers: string | null
+  notes: string | null
+  subsidi_silang: boolean | null
+  fee_notes: string | null
+  data_source: string | null
+  last_verified: string | null
+}

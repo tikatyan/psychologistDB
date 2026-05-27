@@ -1,0 +1,160 @@
+import { supabase } from './supabase'
+import type { Psikolog, Clinic } from './types'
+
+export async function getStats(): Promise<{
+  totalPsikolog: number
+  totalKliniks: number
+  totalKota: number
+}> {
+  const [psikologResult, klinikResult, kotaPsikologResult, kotaKlinikResult] =
+    await Promise.all([
+      supabase.from('psikolog').select('id', { count: 'exact', head: true }),
+      supabase.from('clinics').select('id', { count: 'exact', head: true }),
+      supabase.from('psikolog').select('kota'),
+      supabase.from('clinics').select('kota'),
+    ])
+
+  const kotaSet = new Set<string>()
+  for (const row of kotaPsikologResult.data ?? []) {
+    if (row.kota) kotaSet.add(row.kota)
+  }
+  for (const row of kotaKlinikResult.data ?? []) {
+    if (row.kota) kotaSet.add(row.kota)
+  }
+
+  return {
+    totalPsikolog: psikologResult.count ?? 0,
+    totalKliniks: klinikResult.count ?? 0,
+    totalKota: kotaSet.size,
+  }
+}
+
+export async function searchDirectory(params: {
+  q?: string
+  kota?: string
+  online?: boolean
+  offline?: boolean
+  bpjs?: boolean
+  focus?: string
+  approach?: string
+  ageRange?: string
+  format?: string
+  feeMax?: number
+  type?: 'psikolog' | 'klinik' | 'semua'
+}): Promise<{ psikolog: Psikolog[]; clinics: Clinic[] }> {
+  const type = params.type ?? 'semua'
+
+  let psikologData: Psikolog[] = []
+  let clinicsData: Clinic[] = []
+
+  if (type === 'psikolog' || type === 'semua') {
+    let query = supabase
+      .from('psikolog')
+      .select('*')
+      .order('data_completeness_score', { ascending: false })
+
+    if (params.q) {
+      query = query.textSearch('search_vector', params.q, {
+        type: 'websearch',
+        config: 'simple',
+      })
+    }
+    if (params.kota) {
+      query = query.eq('kota', params.kota)
+    }
+    if (params.online) {
+      query = query.eq('online_available', true)
+    }
+    if (params.offline) {
+      query = query.eq('offline_available', true)
+    }
+    if (params.bpjs) {
+      query = query.eq('bpjs_accepted', true)
+    }
+    if (params.focus) {
+      query = query.contains('case_focus', [params.focus])
+    }
+    if (params.approach) {
+      query = query.contains('therapeutic_approach', [params.approach])
+    }
+    if (params.ageRange) {
+      query = query.contains('age_range_handled', [params.ageRange])
+    }
+    if (params.format) {
+      query = query.contains('session_format', [params.format])
+    }
+    if (params.feeMax !== undefined) {
+      query = query.lte('fee_online_idr_min', params.feeMax)
+    }
+
+    const { data } = await query
+    psikologData = (data as Psikolog[]) ?? []
+  }
+
+  if (type === 'klinik' || type === 'semua') {
+    let query = supabase.from('clinics').select('*').order('kota', { ascending: true })
+
+    if (params.q) {
+      query = query.textSearch('search_vector', params.q, {
+        type: 'websearch',
+        config: 'simple',
+      })
+    }
+    if (params.kota) {
+      query = query.eq('kota', params.kota)
+    }
+    if (params.online) {
+      query = query.eq('online_available', true)
+    }
+    if (params.offline) {
+      query = query.eq('offline_available', true)
+    }
+    if (params.bpjs) {
+      query = query.eq('bpjs_accepted', true)
+    }
+    if (params.focus) {
+      query = query.contains('focus', [params.focus])
+    }
+
+    const { data } = await query
+    clinicsData = (data as Clinic[]) ?? []
+  }
+
+  return { psikolog: psikologData, clinics: clinicsData }
+}
+
+export async function getPsikolog(id: string): Promise<Psikolog | null> {
+  const { data } = await supabase.from('psikolog').select('*').eq('id', id).single()
+  return (data as Psikolog | null) ?? null
+}
+
+export async function getClinic(id: string): Promise<Clinic | null> {
+  const { data } = await supabase.from('clinics').select('*').eq('id', id).single()
+  return (data as Clinic | null) ?? null
+}
+
+export async function getPsikologByClinic(clinicIds: string[]): Promise<Psikolog[]> {
+  const { data } = await supabase
+    .from('psikolog')
+    .select('*')
+    .overlaps('clinic_ids', clinicIds)
+    .order('data_completeness_score', { ascending: false })
+  return (data as Psikolog[]) ?? []
+}
+
+export async function getKotaList(): Promise<string[]> {
+  const [psikologResult, klinikResult] = await Promise.all([
+    supabase.from('psikolog').select('kota'),
+    supabase.from('clinics').select('kota'),
+  ])
+
+  const kotaSet = new Set<string>()
+  for (const row of psikologResult.data ?? []) {
+    if (row.kota) kotaSet.add(row.kota)
+  }
+  for (const row of klinikResult.data ?? []) {
+    if (row.kota) kotaSet.add(row.kota)
+  }
+
+  return Array.from(kotaSet).sort()
+}
