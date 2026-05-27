@@ -34,7 +34,9 @@ export default function TambahkanPage() {
             tepat. Kamu bisa mengirimkan informasi dari sumber publik.
           </p>
           <a
-            href="#todo-gform-tambah"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSd0xE5LUTu4gdniw1xWUSyZXflPeupn-6O95pCGlwgAKUrLRg/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-primary justify-center"
           >
             Isi formulir penambahan
@@ -58,7 +60,9 @@ export default function TambahkanPage() {
             spesialisasi secara langsung.
           </p>
           <a
-            href="#todo-gform-klaim"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeEnBk4bWs1Z7yIM-7OmPXvGQn2ED5PvfREyNKISkl0deN-Xw/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#d97454] bg-white px-4 py-2.5 text-sm font-semibold text-[#d97454] transition hover:bg-[#fdf0eb] active:scale-95"
           >
             Klaim profilmu
