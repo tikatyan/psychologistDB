@@ -149,11 +149,10 @@ export async function getKotaList(): Promise<string[]> {
   ])
 
   const kotaSet = new Set<string>()
-  for (const row of psikologResult.data ?? []) {
-    if (row.kota) kotaSet.add(row.kota)
-  }
-  for (const row of klinikResult.data ?? []) {
-    if (row.kota) kotaSet.add(row.kota)
+  for (const row of [...(psikologResult.data ?? []), ...(klinikResult.data ?? [])]) {
+    if (row.kota) {
+      row.kota.split(',').map((k: string) => k.trim()).filter(Boolean).forEach((k: string) => kotaSet.add(k))
+    }
   }
 
   return Array.from(kotaSet).sort()

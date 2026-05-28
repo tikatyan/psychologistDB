@@ -15,7 +15,7 @@ interface FilterSheetProps {
 }
 
 const SPECIALIZATIONS = [
-  'Kecemasan', 'Depresi', 'Trauma', 'PTSD', 'Hubungan', 'Burnout', 'Anak', 'Remaja',
+  'kecemasan', 'depresi', 'trauma', 'OCD', 'relasi romantis', 'burnout', 'psikologi anak', 'remaja',
 ]
 
 export default function FilterSheet({
