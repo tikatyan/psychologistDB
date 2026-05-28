@@ -60,7 +60,7 @@ export async function searchDirectory(params: {
       })
     }
     if (params.kota) {
-      query = query.eq('kota', params.kota)
+      query = query.ilike('kota', `%${params.kota}%`)
     }
     if (params.online) {
       query = query.eq('online_available', true)
@@ -101,7 +101,7 @@ export async function searchDirectory(params: {
       })
     }
     if (params.kota) {
-      query = query.eq('kota', params.kota)
+      query = query.ilike('kota', `%${params.kota}%`)
     }
     if (params.online) {
       query = query.eq('online_available', true)
