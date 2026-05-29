@@ -21,7 +21,7 @@ export default function Navbar() {
           href="/"
           className="font-serif text-xl leading-none text-[#1e3d12] transition-colors hover:text-[#396025]"
         >
-          PsikologDB
+          Temukan Psikolog
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">

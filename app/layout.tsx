@@ -18,7 +18,7 @@ const dmSerifDisplay = DM_Serif_Display({
 })
 
 export const metadata: Metadata = {
-  title: 'PsikologDB',
+  title: 'Temukan Psikolog',
   description:
     'Direktori psikolog dan klinik kesehatan mental Indonesia. Temukan psikolog yang tepat untukmu dengan mudah.',
 }

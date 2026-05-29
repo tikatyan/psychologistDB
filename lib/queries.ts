@@ -31,11 +31,11 @@ export async function getStats(): Promise<{
 
 export async function searchDirectory(params: {
   q?: string
-  kota?: string
+  kota?: string[]
   online?: boolean
   offline?: boolean
   bpjs?: boolean
-  focus?: string
+  focus?: string[]
   approach?: string
   ageRange?: string
   format?: string
@@ -59,8 +59,8 @@ export async function searchDirectory(params: {
         config: 'simple',
       })
     }
-    if (params.kota) {
-      query = query.ilike('kota', `%${params.kota}%`)
+    if (params.kota && params.kota.length > 0) {
+      query = query.or(params.kota.map(k => `kota.ilike.%${k}%`).join(','))
     }
     if (params.online) {
       query = query.eq('online_available', true)
@@ -71,8 +71,8 @@ export async function searchDirectory(params: {
     if (params.bpjs) {
       query = query.eq('bpjs_accepted', true)
     }
-    if (params.focus) {
-      query = query.contains('case_focus', [params.focus])
+    if (params.focus && params.focus.length > 0) {
+      query = query.overlaps('case_focus', params.focus)
     }
     if (params.approach) {
       query = query.contains('therapeutic_approach', [params.approach])
@@ -100,8 +100,8 @@ export async function searchDirectory(params: {
         config: 'simple',
       })
     }
-    if (params.kota) {
-      query = query.ilike('kota', `%${params.kota}%`)
+    if (params.kota && params.kota.length > 0) {
+      query = query.or(params.kota.map(k => `kota.ilike.%${k}%`).join(','))
     }
     if (params.online) {
       query = query.eq('online_available', true)
@@ -112,8 +112,8 @@ export async function searchDirectory(params: {
     if (params.bpjs) {
       query = query.eq('bpjs_accepted', true)
     }
-    if (params.focus) {
-      query = query.contains('focus', [params.focus])
+    if (params.focus && params.focus.length > 0) {
+      query = query.overlaps('focus', params.focus)
     }
 
     const { data } = await query

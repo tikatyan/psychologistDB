@@ -83,7 +83,7 @@ export default async function KlinikProfilePage({ params }: Props) {
     facilities.push({ icon: '⏱️', label: `${c.session_duration_minutes} menit/sesi` })
 
   const hasContact =
-    c.telepon || c.wa_number || c.instagram || c.email || c.website || c.gmaps_link
+    c.telepon || c.wa_number || c.instagram || c.email || c.website
 
   return (
     <main className="mx-auto max-w-[430px]">
@@ -415,24 +415,6 @@ export default async function KlinikProfilePage({ params }: Props) {
                     className="truncate text-[14px] font-medium text-[#1e3d12]"
                   >
                     {c.website.replace(/^https?:\/\//, '')}
-                  </a>
-                </div>
-              </div>
-            )}
-            {c.gmaps_link && (
-              <div className="flex items-center gap-3 py-[10px]">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-[#f3ede0] text-[15px]">
-                  🗺️
-                </div>
-                <div className="flex-1">
-                  <p className="text-[11px] text-[#7b6e5c]">Lokasi</p>
-                  <a
-                    href={c.gmaps_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[14px] font-medium text-[#1e3d12]"
-                  >
-                    Buka di Google Maps
                   </a>
                 </div>
               </div>

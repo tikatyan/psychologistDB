@@ -4,10 +4,13 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const SITUATIONS = [
-  { label: 'Kecemasan & stres', focus: 'kecemasan' },
-  { label: 'Depresi & kesedihan', focus: 'depresi' },
-  { label: 'Trauma & PTSD', focus: 'trauma' },
-  { label: 'Masalah hubungan', focus: 'relasi romantis' },
+  { label: 'Kecemasan', focus: 'kecemasan' },
+  { label: 'Depresi', focus: 'depresi' },
+  { label: 'Trauma', focus: 'trauma' },
+  { label: 'Relasi romantis', focus: 'relasi romantis' },
+  { label: 'OCD', focus: 'OCD' },
+  { label: 'Burnout', focus: 'burnout' },
+  { label: 'Psikologi anak', focus: 'psikologi anak' },
   { label: 'Saya belum yakin', focus: null },
 ]
 
