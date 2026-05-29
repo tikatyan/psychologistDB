@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { searchDirectory, getKotaList } from '@/lib/queries'
 import PsikologCard from '@/components/PsikologCard'
 import ClinicCard from '@/components/ClinicCard'
-import FilterSidebar from '@/components/FilterSidebar'
+import FilterDropdown from '@/components/FilterDropdown'
 
 interface SearchParams {
   q?: string
@@ -73,7 +73,8 @@ export default async function CariPage({
     <div className="min-h-screen bg-[#faf7f0]">
       {/* Sticky header */}
       <div className="sticky top-[53px] z-40 border-b border-[#e5d9c2] bg-[#f3ede0]">
-        <div className="mx-auto max-w-6xl px-5">
+        <div className="mx-auto max-w-5xl px-5">
+          {/* Nav row */}
           <div className="flex items-center gap-[10px] pb-2 pt-[10px]">
             <Link
               href="/"
@@ -85,8 +86,7 @@ export default async function CariPage({
             <span className="flex-1 font-serif text-[20px] leading-none tracking-tight text-[#1e3d12]">
               Cari Psikolog
             </span>
-            {/* Mobile filter trigger */}
-            <FilterSidebar
+            <FilterDropdown
               kotaList={kotaList}
               currentKota={kota}
               currentFocus={focus}
@@ -122,7 +122,7 @@ export default async function CariPage({
             </form>
           </div>
 
-          {/* Active chips */}
+          {/* Active filter chips */}
           {activeChips.length > 0 && (
             <div className="flex gap-[7px] overflow-x-auto pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {activeChips.map((chip) => (
@@ -140,75 +140,62 @@ export default async function CariPage({
         </div>
       </div>
 
-      {/* Body: sidebar + results */}
-      <div className="mx-auto max-w-6xl px-4 py-5">
-        <div className="flex gap-6">
-          {/* Sidebar — desktop only */}
-          <aside className="hidden w-[240px] shrink-0 md:block">
-            <FilterSidebar
-              kotaList={kotaList}
-              currentKota={kota}
-              currentFocus={focus}
-              currentOnline={online}
-              currentOffline={offline}
-              currentBpjs={bpjs}
-              currentQ={sp.q}
-              totalResults={totalResults}
-            />
-          </aside>
+      {/* Results */}
+      <div className="mx-auto max-w-5xl px-4 py-5">
+        <p className="mb-4 px-1 text-[13px] font-medium text-[#7b6e5c]">
+          {totalResults > 0
+            ? `${totalResults} hasil ditemukan`
+            : 'Belum ada hasil ditemukan'}
+        </p>
 
-          {/* Results */}
-          <div className="min-w-0 flex-1">
-            <p className="mb-4 px-1 text-[13px] font-medium text-[#7b6e5c]">
-              {totalResults > 0
-                ? `${totalResults} hasil ditemukan`
-                : 'Belum ada hasil ditemukan'}
+        {totalResults === 0 ? (
+          <div className="rounded-[20px] border border-[#e5d9c2] bg-white px-6 py-16 text-center">
+            <p className="mb-2 text-[15px] font-bold text-[#19290f]">Belum ada hasil</p>
+            <p className="mb-6 text-[13px] text-[#7b6e5c]">
+              Coba ubah filter atau tambahkan psikolog baru ke direktori.
             </p>
+            <Link
+              href="/tambahkan"
+              className="inline-flex rounded-full bg-[#1e3d12] px-5 py-3 text-[14px] font-bold text-white no-underline transition hover:bg-[#396025]"
+            >
+              Tambahkan psikolog
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {psikolog.length > 0 && (
+              <section>
+                <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7b6e5c]">
+                  Psikolog{' '}
+                  <span className="ml-1 font-serif text-[16px] normal-case tracking-normal text-[#1e3d12]">
+                    {psikolog.length}
+                  </span>
+                </h2>
+                <div className="grid gap-[10px] sm:grid-cols-2 lg:grid-cols-3">
+                  {psikolog.map((p) => (
+                    <PsikologCard key={p.id} psikolog={p} />
+                  ))}
+                </div>
+              </section>
+            )}
 
-            {totalResults === 0 ? (
-              <div className="rounded-[20px] border border-[#e5d9c2] bg-white px-6 py-16 text-center">
-                <p className="mb-2 text-[15px] font-bold text-[#19290f]">Belum ada hasil</p>
-                <p className="mb-6 text-[13px] text-[#7b6e5c]">
-                  Coba ubah filter atau tambahkan psikolog baru ke direktori.
-                </p>
-                <Link
-                  href="/tambahkan"
-                  className="inline-flex rounded-full bg-[#1e3d12] px-5 py-3 text-[14px] font-bold text-white no-underline transition hover:bg-[#396025]"
-                >
-                  Tambahkan psikolog
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-8">
-                {psikolog.length > 0 && (
-                  <section>
-                    <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7b6e5c]">
-                      Psikolog <span className="ml-1 font-serif text-[16px] normal-case tracking-normal text-[#1e3d12]">{psikolog.length}</span>
-                    </h2>
-                    <div className="grid gap-[10px] sm:grid-cols-2 lg:grid-cols-3">
-                      {psikolog.map((p) => (
-                        <PsikologCard key={p.id} psikolog={p} />
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {clinics.length > 0 && (
-                  <section>
-                    <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7b6e5c]">
-                      Klinik <span className="ml-1 font-serif text-[16px] normal-case tracking-normal text-[#1e3d12]">{clinics.length}</span>
-                    </h2>
-                    <div className="grid gap-[10px] sm:grid-cols-2 lg:grid-cols-3">
-                      {clinics.map((c) => (
-                        <ClinicCard key={c.id} clinic={c} />
-                      ))}
-                    </div>
-                  </section>
-                )}
-              </div>
+            {clinics.length > 0 && (
+              <section>
+                <h2 className="mb-3 text-[13px] font-bold uppercase tracking-[0.08em] text-[#7b6e5c]">
+                  Klinik{' '}
+                  <span className="ml-1 font-serif text-[16px] normal-case tracking-normal text-[#1e3d12]">
+                    {clinics.length}
+                  </span>
+                </h2>
+                <div className="grid gap-[10px] sm:grid-cols-2 lg:grid-cols-3">
+                  {clinics.map((c) => (
+                    <ClinicCard key={c.id} clinic={c} />
+                  ))}
+                </div>
+              </section>
             )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
