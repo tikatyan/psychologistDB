@@ -33,9 +33,7 @@ export default function SituationGrid() {
             key={s.label}
             onClick={() => handleClick(i, s.focus)}
             disabled={loadingIdx !== null}
-            className={`rounded-[14px] border-[1.5px] px-4 py-[15px] text-left text-[14px] font-semibold leading-snug tracking-tight transition-all${
-              i === SITUATIONS.length - 1 ? ' col-span-2' : ''
-            } ${
+            className={`rounded-[14px] border-[1.5px] px-4 py-[15px] text-left text-[14px] font-semibold leading-snug tracking-tight transition-all ${
               isLoading
                 ? 'border-[#1e3d12] bg-[#1e3d12] text-white scale-[0.98]'
                 : isDimmed
