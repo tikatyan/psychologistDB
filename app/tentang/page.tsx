@@ -16,23 +16,23 @@ export default function TentangPage() {
 
       <div className="space-y-8">
         <section>
-          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Ini apa, sih?</h2>
+          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Apa itu TemukanPsikolog?</h2>
           <p className="text-[14px] leading-relaxed text-[#7b6e5c]">
-            TemukanPsikolog mengumpulkan info psikolog klinis dan klinik kesehatan mental dari seluruh Indonesia di satu tempat. Spesialisasi, biaya, format sesi, cara menghubungi — semua ada di sini supaya kamu bisa ambil keputusan yang tepat sebelum mulai.
+            TemukanPsikolog mengumpulkan info psikolog klinis dan klinik kesehatan mental dari seluruh Indonesia di satu tempat. Spesialisasi, biaya, format sesi, cara menghubungi, semua ada di sini supaya kamu bisa ambil keputusan yang tepat sebelum mulai.
           </p>
         </section>
 
         <section>
-          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Kenapa ini perlu ada?</h2>
+          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Kenapa website ini perlu ada?</h2>
           <p className="text-[14px] leading-relaxed text-[#7b6e5c]">
-            Cari psikolog yang cocok di Indonesia itu susah. Informasinya tersebar di mana-mana, biayanya tidak transparan, dan tidak semua orang tahu harus mulai dari mana. Kami percaya bahwa informasi yang mudah dijangkau bisa jadi langkah pertama yang berarti.
+            Kami paham mencari psikolog yang cocok di Indonesia itu susah. Informasinya tersebar di mana-mana, biayanya tidak transparan, dan tidak semua orang tahu harus mulai dari mana. Kami percaya bahwa informasi yang mudah dijangkau bisa jadi langkah pertama yang berarti.
           </p>
         </section>
 
         <section>
-          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Data dari mana?</h2>
+          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Dari mana datanya didapatkan?</h2>
           <p className="mb-3 text-[14px] leading-relaxed text-[#7b6e5c]">
-            Dikumpulkan dari berbagai sumber publik:
+            Kami mengumpulkan dari berbagai sumber publik:
           </p>
           <ul className="list-inside list-disc space-y-1.5 text-[14px] text-[#7b6e5c]">
             <li>Website resmi psikolog dan klinik</li>
@@ -44,14 +44,14 @@ export default function TentangPage() {
         </section>
 
         <section>
-          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Bisa ikut bantu?</h2>
+          <h2 className="mb-3 text-[17px] font-semibold text-[#19290f]">Apa saya bisa ikut melengkapi?</h2>
           <p className="mb-4 text-[14px] leading-relaxed text-[#7b6e5c]">
-            Direktori ini tumbuh karena kontribusi komunitas. Kamu bisa:
+            Tentu! Direktori ini tumbuh karena kontribusi komunitas. Anda bisa:
           </p>
           <ul className="mb-4 list-inside list-disc space-y-1.5 text-[14px] text-[#7b6e5c]">
             <li>Tambahkan psikolog yang belum terdaftar</li>
-            <li>Laporkan info yang tidak akurat atau sudah basi</li>
-            <li>Klaim dan perbarui profilmu sendiri (untuk psikolog)</li>
+            <li>Laporkan info yang tidak akurat</li>
+            <li>Perbarui profilmu sendiri jika Anda psikolog</li>
           </ul>
           <Link href="/tambahkan" className="btn-primary">
             Mulai berkontribusi
@@ -61,7 +61,7 @@ export default function TentangPage() {
         <section className="rounded-2xl border border-[#e5d9c2] bg-[#f3ede0] p-5">
           <h2 className="mb-2 text-[15px] font-semibold text-[#19290f]">Catatan penting</h2>
           <p className="text-[13px] leading-relaxed text-[#7b6e5c]">
-            Data dikumpulkan dari sumber publik dan mungkin tidak selalu up-to-date atau lengkap. Selalu verifikasi langsung dengan psikolog atau klinik sebelum membuat keputusan. TemukanPsikolog tidak bertanggung jawab atas akurasi info yang ditampilkan.
+            Data yang kami dapatkan tidak selalu up-to-date atau lengkap. Selalu verifikasi langsung dengan psikolog atau klinik sebelum membuat keputusan. TemukanPsikolog tidak bertanggung jawab atas akurasi info yang ditampilkan.
           </p>
         </section>
 
