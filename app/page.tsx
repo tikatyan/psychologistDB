@@ -9,33 +9,28 @@ export default async function HomePage() {
     <main>
       {/* Hero */}
       <section
-        className="relative flex items-end overflow-hidden"
+        className="relative flex items-end overflow-hidden bg-cover bg-center"
         style={{
           minHeight: 420,
-          background: 'linear-gradient(160deg, #2a5a1a 0%, #1e3d12 40%, #0d2208 100%)',
+          backgroundImage: 'url(/hero.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         <div
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              'radial-gradient(ellipse at 25% 30%, rgba(82,122,58,0.35) 0%, transparent 60%), radial-gradient(ellipse at 75% 70%, rgba(30,61,18,0.6) 0%, transparent 55%)',
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 z-[2]"
-          style={{
-            background:
-              'linear-gradient(to top, rgba(8,22,4,0.85) 0%, rgba(8,22,4,0.3) 50%, rgba(8,22,4,0) 80%)',
+              'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 100%)',
           }}
         />
         <div className="relative z-[3] mx-auto w-full max-w-5xl px-6 pb-12 pt-20 sm:px-8 sm:pb-16">
-          <h1 className="mb-3 font-serif text-5xl leading-none tracking-tight text-white sm:text-6xl">
+          <h1 className="mb-3 font-serif text-5xl leading-none tracking-tight text-[#19290f] sm:text-6xl">
             Kamu tidak harus
             <br />
-            <em className="text-[#9ec485]">melaluinya sendirian.</em>
+            <em className="text-[#1e3d12]">melaluinya sendirian.</em>
           </h1>
-          <p className="max-w-xs text-[14px] leading-relaxed text-white/70 sm:max-w-sm">
+          <p className="max-w-xs text-[14px] leading-relaxed text-[#7b6e5c] sm:max-w-sm">
             Temukan daftar psikolog dan klinik kesehatan mental di seluruh Indonesia secara terbuka dan bisa diakses siapa saja.
           </p>
         </div>
