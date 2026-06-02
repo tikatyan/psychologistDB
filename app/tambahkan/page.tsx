@@ -11,7 +11,7 @@ export default function TambahkanPage() {
       <div className="mb-10 text-center">
         <h1 className="font-serif text-3xl text-[#19290f]">Bantu lengkapi direktori</h1>
         <p className="mt-3 text-[#7b6e5c]">
-          Semakin banyak info yang akurat, semakin mudah orang menemukan bantuan yang pas.
+          Semakin banyak info yang akurat, semakin banyak orang menemukan bantuan yang tepat.
         </p>
       </div>
 
@@ -29,7 +29,7 @@ export default function TambahkanPage() {
             Tambahkan psikolog baru
           </h2>
           <p className="mb-6 flex-1 text-[14px] text-[#7b6e5c]">
-            Tahu psikolog yang bagus tapi belum ada di sini? Bantu daftarkan — kamu bisa kirim dari sumber publik manapun.
+            Tahu psikolog lain yang belum ada di daftar ini? Beri tahu kami dengan mengisi formulir.
           </p>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSd0xE5LUTu4gdniw1xWUSyZXflPeupn-6O95pCGlwgAKUrLRg/viewform"
@@ -37,7 +37,7 @@ export default function TambahkanPage() {
             rel="noopener noreferrer"
             className="btn-primary justify-center"
           >
-            Isi formulir
+            Rekomendasikan psikolog
           </a>
         </div>
 
@@ -50,10 +50,10 @@ export default function TambahkanPage() {
             </svg>
           </div>
           <h2 className="mb-2 text-[17px] font-semibold text-[#19290f]">
-            Saya psikolog — klaim profil saya
+            Lengkapi profil psikolog
           </h2>
           <p className="mb-6 flex-1 text-[14px] text-[#7b6e5c]">
-            Profilmu sudah ada tapi info-nya belum lengkap atau ada yang keliru? Klaim dan perbarui langsung — biaya, spesialisasi, dan kontak.
+            Anda psikolog yang profilnya sudah ada di sini dan ingin memperbarui data? Lengkapi profil Anda dengan mengisi formulir.
           </p>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSeEnBk4bWs1Z7yIM-7OmPXvGQn2ED5PvfREyNKISkl0deN-Xw/viewform"
@@ -61,7 +61,7 @@ export default function TambahkanPage() {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] border-[#e5d9c2] bg-white px-5 py-3 text-[14px] font-semibold text-[#19290f] transition hover:border-[#1e3d12]"
           >
-            Klaim profilmu
+            Lengkapi profil
           </a>
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function TambahkanPage() {
       <div className="mt-8 rounded-2xl border border-[#e5d9c2] bg-[#f3ede0] p-6">
         <h3 className="mb-2 text-[15px] font-semibold text-[#19290f]">Proses review</h3>
         <p className="text-[13px] text-[#7b6e5c]">
-          Setiap pengajuan kami tinjau manual sebelum ditampilkan. Biasanya butuh 2–5 hari kerja.
+          Setiap pengajuan membutuhkan waktu 5 hari kerja untuk kami tinjau secara manual sebelum ditampilkan.
         </p>
       </div>
     </main>
