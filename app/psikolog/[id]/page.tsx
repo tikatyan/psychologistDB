@@ -4,6 +4,7 @@ import { getPsikolog } from '@/lib/queries'
 import type { Psikolog } from '@/lib/types'
 import Link from 'next/link'
 import { FOCUS_DEFINITIONS, APPROACH_DEFINITIONS } from '@/lib/definitions'
+import DefinitionsModal from '@/components/DefinitionsModal'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -182,19 +183,10 @@ export default async function PsikologProfilePage({ params }: Props) {
         {p.case_focus && p.case_focus.length > 0 && (
           <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
             <SecLabel>Spesialisasi</SecLabel>
-            <div className="flex flex-wrap gap-[7px]">
+            <div className="flex flex-wrap items-center gap-[7px]">
               {p.case_focus.map((t) => <Tag key={t}>{t}</Tag>)}
+              <DefinitionsModal items={p.case_focus} definitions={FOCUS_DEFINITIONS} />
             </div>
-            {p.case_focus.some((t) => FOCUS_DEFINITIONS[t]) && (
-              <div className="mt-4 space-y-2">
-                {p.case_focus.filter((t) => FOCUS_DEFINITIONS[t]).map((t) => (
-                  <div key={t} className="rounded-[10px] bg-[#f3ede0] px-3 py-2.5">
-                    <span className="text-[12px] font-bold text-[#19290f]">{t} </span>
-                    <span className="text-[12px] text-[#7b6e5c]">{FOCUS_DEFINITIONS[t]}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         )}
 
@@ -202,19 +194,10 @@ export default async function PsikologProfilePage({ params }: Props) {
         {p.therapeutic_approach && p.therapeutic_approach.length > 0 && (
           <div className="border-t border-[#e5d9c2] bg-[#faf7f0] px-6 py-5">
             <SecLabel>Pendekatan Terapi</SecLabel>
-            <div className="flex flex-wrap gap-[7px]">
+            <div className="flex flex-wrap items-center gap-[7px]">
               {p.therapeutic_approach.map((t) => <Tag key={t} approach>{t}</Tag>)}
+              <DefinitionsModal items={p.therapeutic_approach} definitions={APPROACH_DEFINITIONS} tint="green" />
             </div>
-            {p.therapeutic_approach.some((t) => APPROACH_DEFINITIONS[t]) && (
-              <div className="mt-4 space-y-2">
-                {p.therapeutic_approach.filter((t) => APPROACH_DEFINITIONS[t]).map((t) => (
-                  <div key={t} className="rounded-[10px] bg-[#eaf3e5] px-3 py-2.5">
-                    <span className="text-[12px] font-bold text-[#396025]">{t} </span>
-                    <span className="text-[12px] text-[#527a3a]">{APPROACH_DEFINITIONS[t]}</span>
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         )}
 
