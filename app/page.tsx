@@ -31,12 +31,12 @@ export default async function HomePage() {
         />
         <div className="relative z-[3] mx-auto w-full max-w-5xl px-6 pb-12 pt-20 sm:px-8 sm:pb-16">
           <h1 className="mb-3 font-serif text-5xl leading-none tracking-tight text-white sm:text-6xl">
-            Kamu tidak harus
+            You don&apos;t have to
             <br />
-            <em className="text-[#9ec485]">sendirian.</em>
+            <em className="text-[#9ec485]">go through it alone.</em>
           </h1>
           <p className="max-w-xs text-[14px] leading-relaxed text-white/70 sm:max-w-sm">
-            Direktori psikolog dan klinik kesehatan mental di seluruh Indonesia.
+            Cari psikolog dan klinik kesehatan mental di seluruh Indonesia — gratis, terbuka, dan tanpa drama.
           </p>
         </div>
       </section>
@@ -48,7 +48,7 @@ export default async function HomePage() {
         <section className="border-b border-[#cdd5c5] px-6 py-7 sm:px-8">
           <div className="mx-auto max-w-xl">
             <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[#7b6e5c]">
-              Apa yang sedang kamu rasakan?
+              Apa yang sedang kamu hadapi?
             </p>
             <SituationGrid />
           </div>
@@ -112,12 +112,12 @@ export default async function HomePage() {
         {/* CTA text link */}
         <div className="border-b border-[#cdd5c5] px-6 py-[22px] text-center">
           <p className="text-[13px] leading-relaxed text-[#7b6e5c]">
-            Bantu kami lengkapi direktori ini —{' '}
+            Tahu psikolog yang belum terdaftar?{' '}
             <Link
               href="/tambahkan"
               className="border-b border-[#527a3a] pb-px font-bold text-[#396025] transition hover:text-[#1e3d12]"
             >
-              tambahkan psikolog
+              Bantu tambahkan
             </Link>
           </p>
         </div>
@@ -126,7 +126,7 @@ export default async function HomePage() {
         <section className="bg-[#1e3d12] px-6 py-8 sm:px-8">
           <div className="mx-auto max-w-xl">
             <p className="mb-[10px] text-[11px] font-bold uppercase tracking-[0.12em] text-[#9ec485]/70">
-              Tentang PsikologDB
+              Tentang TemukanPsikolog
             </p>
             <h2 className="mb-4 font-serif text-[28px] leading-tight tracking-tight text-white">
               Dibuat bersama,
@@ -134,13 +134,10 @@ export default async function HomePage() {
               <em className="text-[#9ec485]">untuk semua.</em>
             </h2>
             <p className="text-[13.5px] leading-[1.72] text-white/60">
-              PsikologDB lahir dari keyakinan bahwa menemukan psikolog yang tepat tidak seharusnya
-              sulit. Kami membangun direktori ini secara terbuka dan bersama komunitas, agar setiap
-              orang di Indonesia bisa menemukan bantuan profesional yang sesuai dengan kebutuhan
-              dan kondisinya.
+              TemukanPsikolog ada karena cari psikolog yang tepat di Indonesia itu tidak semestinya serumit ini. Kami kumpulkan informasinya di satu tempat — terbuka, gratis, dan terus diperbarui bersama komunitas.
             </p>
             <p className="mt-[10px] text-[13.5px] leading-[1.72] text-white/60">
-              Kami tidak menjual layanan konseling. Kami hanya membantu kamu menemukan bantuan.
+              Kami tidak jual layanan konseling. Kami hanya bantu kamu menemukan orang yang bisa bantu.
             </p>
           </div>
         </section>

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { getPsikolog } from '@/lib/queries'
 import type { Psikolog } from '@/lib/types'
 import Link from 'next/link'
+import { FOCUS_DEFINITIONS, APPROACH_DEFINITIONS } from '@/lib/definitions'
 
 interface Props {
   params: Promise<{ id: string }>
@@ -33,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await getPsikolog(id)
   if (!p) return { title: 'Psikolog tidak ditemukan' }
   return {
-    title: `${p.nama ?? 'Psikolog'} – PsikologDB`,
+    title: `${p.nama ?? 'Psikolog'} – Temukan Psikolog`,
     description: `Profil psikolog ${p.nama ?? ''}${p.kota ? ` di ${p.kota}` : ''}. ${p.case_focus?.slice(0, 3).join(', ') ?? ''}`,
   }
 }
@@ -184,6 +185,16 @@ export default async function PsikologProfilePage({ params }: Props) {
             <div className="flex flex-wrap gap-[7px]">
               {p.case_focus.map((t) => <Tag key={t}>{t}</Tag>)}
             </div>
+            {p.case_focus.some((t) => FOCUS_DEFINITIONS[t]) && (
+              <div className="mt-4 space-y-2">
+                {p.case_focus.filter((t) => FOCUS_DEFINITIONS[t]).map((t) => (
+                  <div key={t} className="rounded-[10px] bg-[#f3ede0] px-3 py-2.5">
+                    <span className="text-[12px] font-bold text-[#19290f]">{t} </span>
+                    <span className="text-[12px] text-[#7b6e5c]">{FOCUS_DEFINITIONS[t]}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -194,6 +205,16 @@ export default async function PsikologProfilePage({ params }: Props) {
             <div className="flex flex-wrap gap-[7px]">
               {p.therapeutic_approach.map((t) => <Tag key={t} approach>{t}</Tag>)}
             </div>
+            {p.therapeutic_approach.some((t) => APPROACH_DEFINITIONS[t]) && (
+              <div className="mt-4 space-y-2">
+                {p.therapeutic_approach.filter((t) => APPROACH_DEFINITIONS[t]).map((t) => (
+                  <div key={t} className="rounded-[10px] bg-[#eaf3e5] px-3 py-2.5">
+                    <span className="text-[12px] font-bold text-[#396025]">{t} </span>
+                    <span className="text-[12px] text-[#527a3a]">{APPROACH_DEFINITIONS[t]}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

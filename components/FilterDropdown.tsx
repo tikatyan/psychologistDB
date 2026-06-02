@@ -15,8 +15,8 @@ interface FilterDropdownProps {
 }
 
 const SPECIALIZATIONS = [
-  'kecemasan', 'depresi', 'trauma', 'OCD',
-  'relasi romantis', 'burnout', 'psikologi anak', 'remaja',
+  'Kecemasan', 'Depresi', 'Trauma', 'OCD',
+  'Relasi Romantis', 'Burnout', 'Psikologi Anak', 'Remaja',
 ]
 
 export default function FilterDropdown({
