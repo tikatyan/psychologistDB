@@ -36,7 +36,7 @@ export default async function HomePage() {
             <em className="text-[#9ec485]">go through it alone.</em>
           </h1>
           <p className="max-w-xs text-[14px] leading-relaxed text-white/70 sm:max-w-sm">
-            Cari psikolog dan klinik kesehatan mental di seluruh Indonesia — gratis, terbuka, dan tanpa drama.
+            Temukan psikolog dan klinik kesehatan mental di seluruh Indonesia secara gratis, terbuka, dan bisa diakses siapa saja.
           </p>
         </div>
       </section>
@@ -48,7 +48,7 @@ export default async function HomePage() {
         <section className="border-b border-[#cdd5c5] px-6 py-7 sm:px-8">
           <div className="mx-auto max-w-xl">
             <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[#7b6e5c]">
-              Apa yang sedang kamu hadapi?
+              Apa yang sedang kamu rasakan?
             </p>
             <SituationGrid />
           </div>
@@ -73,7 +73,7 @@ export default async function HomePage() {
                 <input
                   name="q"
                   type="search"
-                  placeholder="Nama, kota, atau spesialisasi..."
+                  placeholder="Nama psikolog, kota, atau topik yang ingin dibicarakan..."
                   className="w-full rounded-full border-[1.5px] border-[#cdd5c5] bg-[#e6ece0] py-[13px] pl-[46px] pr-5 font-sans text-[15px] text-[#19290f] outline-none transition placeholder:text-[#7b6e5c] focus:border-[#396025] focus:bg-[#faf7f0]"
                 />
               </div>
@@ -112,7 +112,7 @@ export default async function HomePage() {
         {/* CTA text link */}
         <div className="border-b border-[#cdd5c5] px-6 py-[22px] text-center">
           <p className="text-[13px] leading-relaxed text-[#7b6e5c]">
-            Tahu psikolog yang belum terdaftar?{' '}
+            Tahu psikolog yang belum ada di daftar ini?{' '}
             <Link
               href="/tambahkan"
               className="border-b border-[#527a3a] pb-px font-bold text-[#396025] transition hover:text-[#1e3d12]"
@@ -134,10 +134,10 @@ export default async function HomePage() {
               <em className="text-[#9ec485]">untuk semua.</em>
             </h2>
             <p className="text-[13.5px] leading-[1.72] text-white/60">
-              TemukanPsikolog ada karena cari psikolog yang tepat di Indonesia itu tidak semestinya serumit ini. Kami kumpulkan informasinya di satu tempat — terbuka, gratis, dan terus diperbarui bersama komunitas.
+              TemukanPsikolog ada karena mencari psikolog yang tepat di Indonesia itu tidak semestinya serumit ini.
             </p>
             <p className="mt-[10px] text-[13.5px] leading-[1.72] text-white/60">
-              Kami tidak jual layanan konseling. Kami hanya bantu kamu menemukan orang yang bisa bantu.
+              Kami tidak menjual layanan konseling. Kami hanya mempermudah kamu menemukan orang yang bisa membantu.
             </p>
           </div>
         </section>
