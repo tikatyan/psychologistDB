@@ -31,12 +31,12 @@ export default async function HomePage() {
         />
         <div className="relative z-[3] mx-auto w-full max-w-5xl px-6 pb-12 pt-20 sm:px-8 sm:pb-16">
           <h1 className="mb-3 font-serif text-5xl leading-none tracking-tight text-white sm:text-6xl">
-            You don&apos;t have to
+            Kamu tidak harus
             <br />
-            <em className="text-[#9ec485]">go through it alone.</em>
+            <em className="text-[#9ec485]">melaluinya sendirian.</em>
           </h1>
           <p className="max-w-xs text-[14px] leading-relaxed text-white/70 sm:max-w-sm">
-            Temukan psikolog dan klinik kesehatan mental di seluruh Indonesia secara gratis, terbuka, dan bisa diakses siapa saja.
+            Temukan daftar psikolog dan klinik kesehatan mental di seluruh Indonesia secara terbuka dan bisa diakses siapa saja.
           </p>
         </div>
       </section>
