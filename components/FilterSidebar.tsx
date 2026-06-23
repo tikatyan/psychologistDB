@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface FilterSidebarProps {
   kotaList: string[]
@@ -21,6 +21,83 @@ const SPECIALIZATIONS = [
   'Keluarga', 'Pernikahan', 'Karier', 'Pengembangan Diri',
 ]
 
+const selectCls = 'w-full appearance-none rounded-[10px] border border-[#e5d9c2] bg-[#faf7f0] px-3 py-[9px] pr-8 text-[13px] text-[#19290f] outline-none transition focus:border-[#396025] cursor-pointer'
+
+function ChevronDown() {
+  return (
+    <svg className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7b6e5c" strokeWidth="2.5">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  )
+}
+
+function MultiDropdown({
+  label,
+  options,
+  selected,
+  onToggle,
+}: {
+  label: string
+  options: string[]
+  selected: string[]
+  onToggle: (v: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    if (open) document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [open])
+
+  const buttonLabel = selected.length === 0
+    ? label
+    : selected.length === 1
+    ? selected[0]
+    : `${selected.length} dipilih`
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={`flex w-full items-center justify-between rounded-[10px] border px-3 py-[9px] text-[13px] transition ${
+          selected.length > 0
+            ? 'border-[#1e3d12] bg-[#eaf3e5] font-semibold text-[#1e3d12]'
+            : 'border-[#e5d9c2] bg-[#faf7f0] text-[#19290f]'
+        }`}
+      >
+        <span className="truncate">{buttonLabel}</span>
+        <svg className={`ml-2 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[50] max-h-52 overflow-y-auto rounded-[12px] border border-[#e5d9c2] bg-white shadow-lg">
+          {options.map((opt) => (
+            <label
+              key={opt}
+              className="flex cursor-pointer items-center gap-[10px] px-3 py-[8px] text-[13px] text-[#19290f] hover:bg-[#f3ede0]"
+            >
+              <input
+                type="checkbox"
+                checked={selected.includes(opt)}
+                onChange={() => onToggle(opt)}
+                className="h-4 w-4 accent-[#1e3d12]"
+              />
+              {opt}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function FilterSidebar({
   kotaList,
   currentKota,
@@ -38,16 +115,24 @@ export default function FilterSidebar({
   const [online, setOnline] = useState(currentOnline)
   const [offline, setOffline] = useState(currentOffline)
   const [bpjs, setBpjs] = useState(currentBpjs)
-  const [clientType, setClientType] = useState<'anak' | 'dewasa' | undefined>(currentClientType)
+  const [clientType, setClientType] = useState<'anak' | 'dewasa' | ''>(currentClientType ?? '')
   const [mobileOpen, setMobileOpen] = useState(false)
 
   function toggleKota(k: string) {
     setKota((prev) => prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k])
   }
-
   function toggleFocus(f: string) {
     setFocus((prev) => prev.includes(f) ? prev.filter((x) => x !== f) : [...prev, f])
   }
+
+  function handleFormatChange(val: string) {
+    if (val === 'online') { setOnline(true); setOffline(false) }
+    else if (val === 'offline') { setOnline(false); setOffline(true) }
+    else if (val === 'keduanya') { setOnline(true); setOffline(true) }
+    else { setOnline(false); setOffline(false) }
+  }
+
+  const formatValue = online && offline ? 'keduanya' : online ? 'online' : offline ? 'offline' : ''
 
   function apply() {
     const params = new URLSearchParams()
@@ -63,12 +148,7 @@ export default function FilterSidebar({
   }
 
   function reset() {
-    setKota([])
-    setFocus([])
-    setOnline(false)
-    setOffline(false)
-    setBpjs(false)
-    setClientType(undefined)
+    setKota([]); setFocus([]); setOnline(false); setOffline(false); setBpjs(false); setClientType('')
   }
 
   const activeCount = [
@@ -79,39 +159,28 @@ export default function FilterSidebar({
     clientType ? 1 : 0,
   ].reduce((a, b) => a + b, 0)
 
-  const chip = (active: boolean) =>
-    `rounded-full border-[1.5px] px-3 py-[5px] text-[13px] font-semibold cursor-pointer transition-all select-none ${
-      active
-        ? 'border-[#1e3d12] bg-[#1e3d12] text-white'
-        : 'border-[#e5d9c2] bg-[#faf7f0] text-[#19290f] hover:border-[#396025]'
-    }`
-
   const SectionLabel = ({ children }: { children: string }) => (
-    <div className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.08em] text-[#7b6e5c]">
+    <div className="mb-[7px] text-[11px] font-bold uppercase tracking-[0.08em] text-[#7b6e5c]">
       {children}
     </div>
   )
 
   const body = (
-    <div className="space-y-5">
-      {/* Klien */}
+    <div className="space-y-4">
+      {/* Untuk Siapa */}
       <div>
         <SectionLabel>Untuk Siapa</SectionLabel>
-        <div className="flex flex-wrap gap-[6px]">
-          {(
-            [
-              { label: 'Psikolog Anak', val: 'anak' },
-              { label: 'Psikolog Dewasa', val: 'dewasa' },
-            ] as const
-          ).map(({ label, val }) => (
-            <button
-              key={val}
-              onClick={() => setClientType((prev) => (prev === val ? undefined : val))}
-              className={chip(clientType === val)}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="relative">
+          <select
+            value={clientType}
+            onChange={(e) => setClientType(e.target.value as 'anak' | 'dewasa' | '')}
+            className={selectCls}
+          >
+            <option value="">Semua</option>
+            <option value="anak">Psikolog Anak</option>
+            <option value="dewasa">Psikolog Dewasa</option>
+          </select>
+          <ChevronDown />
         </div>
       </div>
 
@@ -119,54 +188,54 @@ export default function FilterSidebar({
       <div>
         <SectionLabel>Kota</SectionLabel>
         {kotaList.length === 0 ? (
-          <p className="text-[12px] text-[#7b6e5c]">Daftar kota belum tersedia.</p>
+          <p className="text-[12px] text-[#7b6e5c]">Belum tersedia.</p>
         ) : (
-          <div className="flex flex-wrap gap-[6px]">
-            {kotaList.map((k) => (
-              <button key={k} onClick={() => toggleKota(k)} className={chip(kota.includes(k))}>
-                {k}
-              </button>
-            ))}
-          </div>
+          <MultiDropdown
+            label="Pilih kota..."
+            options={kotaList}
+            selected={kota}
+            onToggle={toggleKota}
+          />
         )}
       </div>
 
       {/* Format Sesi */}
       <div>
         <SectionLabel>Format Sesi</SectionLabel>
-        <div className="flex flex-wrap gap-[6px]">
-          {(
-            [
-              { label: 'Online', act: () => { setOnline(true); setOffline(false) }, active: online && !offline },
-              { label: 'Offline', act: () => { setOffline(true); setOnline(false) }, active: offline && !online },
-              { label: 'Keduanya', act: () => { setOnline(true); setOffline(true) }, active: online && offline },
-            ] as const
-          ).map(({ label, act, active }) => (
-            <button key={label} onClick={act} className={chip(active)}>
-              {label}
-            </button>
-          ))}
+        <div className="relative">
+          <select value={formatValue} onChange={(e) => handleFormatChange(e.target.value)} className={selectCls}>
+            <option value="">Semua</option>
+            <option value="online">Online</option>
+            <option value="offline">Offline</option>
+            <option value="keduanya">Online & Offline</option>
+          </select>
+          <ChevronDown />
         </div>
       </div>
 
       {/* Spesialisasi */}
       <div>
         <SectionLabel>Spesialisasi</SectionLabel>
-        <div className="flex flex-wrap gap-[6px]">
-          {SPECIALIZATIONS.map((s) => (
-            <button key={s} onClick={() => toggleFocus(s)} className={chip(focus.includes(s))}>
-              {s}
-            </button>
-          ))}
-        </div>
+        <MultiDropdown
+          label="Pilih spesialisasi..."
+          options={SPECIALIZATIONS}
+          selected={focus}
+          onToggle={toggleFocus}
+        />
       </div>
 
       {/* Asuransi */}
       <div>
         <SectionLabel>Asuransi</SectionLabel>
-        <button onClick={() => setBpjs(!bpjs)} className={chip(bpjs)}>
+        <label className="flex cursor-pointer items-center gap-[10px] rounded-[10px] border border-[#e5d9c2] bg-[#faf7f0] px-3 py-[9px] text-[13px] text-[#19290f]">
+          <input
+            type="checkbox"
+            checked={bpjs}
+            onChange={() => setBpjs((v) => !v)}
+            className="h-4 w-4 accent-[#1e3d12]"
+          />
           Ditanggung BPJS
-        </button>
+        </label>
       </div>
 
       {/* Actions */}
