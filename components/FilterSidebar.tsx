@@ -100,7 +100,7 @@ function MultiDropdown({
               />
             </div>
           )}
-          <div className="max-h-[280px] overflow-y-auto">
+          <div className="max-h-[360px] overflow-y-auto">
             {filtered.length === 0 ? (
               <p className="px-3 py-4 text-center text-[12px] text-[#7b6e5c]">Kota tidak ditemukan</p>
             ) : (

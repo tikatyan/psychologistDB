@@ -7,9 +7,9 @@ const SITUATIONS = [
   { label: 'Cemas', focus: 'Kecemasan' },
   { label: 'Depresi', focus: 'Depresi' },
   { label: 'Trauma', focus: 'Trauma' },
-  { label: 'Masalah Relasi romantis', focus: 'Relasi Romantis' },
+  { label: 'Masalah Relasi Romantis', focus: 'Relasi Romantis' },
   { label: 'Burnout', focus: 'Burnout' },
-  { label: 'Saya belum yakin', focus: null },
+  { label: 'Saya Belum Yakin', focus: null },
 ]
 
 export default function SituationGrid() {
