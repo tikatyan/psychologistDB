@@ -36,22 +36,32 @@ function MultiDropdown({
   options,
   selected,
   onToggle,
+  searchable = false,
 }: {
   label: string
   options: string[]
   selected: string[]
   onToggle: (v: string) => void
+  searchable?: boolean
 }) {
   const [open, setOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+        setSearch('')
+      }
     }
     if (open) document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [open])
+
+  const filtered = searchable && search.trim()
+    ? options.filter((o) => o.toLowerCase().includes(search.toLowerCase()))
+    : options
 
   const buttonLabel = selected.length === 0
     ? label
@@ -77,21 +87,39 @@ function MultiDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[50] max-h-52 overflow-y-auto rounded-[12px] border border-[#e5d9c2] bg-white shadow-lg">
-          {options.map((opt) => (
-            <label
-              key={opt}
-              className="flex cursor-pointer items-center gap-[10px] px-3 py-[8px] text-[13px] text-[#19290f] hover:bg-[#f3ede0]"
-            >
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[50] rounded-[12px] border border-[#e5d9c2] bg-white shadow-lg">
+          {searchable && (
+            <div className="border-b border-[#e5d9c2] px-3 py-2">
               <input
-                type="checkbox"
-                checked={selected.includes(opt)}
-                onChange={() => onToggle(opt)}
-                className="h-4 w-4 accent-[#1e3d12]"
+                autoFocus
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Cari kota..."
+                className="w-full bg-transparent text-[13px] text-[#19290f] outline-none placeholder:text-[#7b6e5c]"
               />
-              {opt}
-            </label>
-          ))}
+            </div>
+          )}
+          <div className="max-h-[280px] overflow-y-auto">
+            {filtered.length === 0 ? (
+              <p className="px-3 py-4 text-center text-[12px] text-[#7b6e5c]">Kota tidak ditemukan</p>
+            ) : (
+              filtered.map((opt) => (
+                <label
+                  key={opt}
+                  className="flex cursor-pointer items-center gap-[10px] px-3 py-[9px] text-[13px] text-[#19290f] hover:bg-[#f3ede0]"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selected.includes(opt)}
+                    onChange={() => onToggle(opt)}
+                    className="h-4 w-4 accent-[#1e3d12]"
+                  />
+                  {opt}
+                </label>
+              ))
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -195,6 +223,7 @@ export default function FilterSidebar({
             options={kotaList}
             selected={kota}
             onToggle={toggleKota}
+            searchable
           />
         )}
       </div>
