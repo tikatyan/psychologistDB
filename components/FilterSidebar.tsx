@@ -10,13 +10,15 @@ interface FilterSidebarProps {
   currentOnline: boolean
   currentOffline: boolean
   currentBpjs: boolean
+  currentClientType?: 'anak' | 'dewasa'
   currentQ?: string
   totalResults: number
 }
 
 const SPECIALIZATIONS = [
-  'kecemasan', 'depresi', 'trauma', 'OCD',
-  'relasi romantis', 'burnout', 'psikologi anak', 'remaja',
+  'Kecemasan', 'Depresi', 'Trauma', 'OCD',
+  'Relasi Romantis', 'Burnout', 'Stres', 'Regulasi Emosi',
+  'Keluarga', 'Pernikahan', 'Karier', 'Pengembangan Diri',
 ]
 
 export default function FilterSidebar({
@@ -26,6 +28,7 @@ export default function FilterSidebar({
   currentOnline,
   currentOffline,
   currentBpjs,
+  currentClientType,
   currentQ,
   totalResults,
 }: FilterSidebarProps) {
@@ -35,6 +38,7 @@ export default function FilterSidebar({
   const [online, setOnline] = useState(currentOnline)
   const [offline, setOffline] = useState(currentOffline)
   const [bpjs, setBpjs] = useState(currentBpjs)
+  const [clientType, setClientType] = useState<'anak' | 'dewasa' | undefined>(currentClientType)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   function toggleKota(k: string) {
@@ -53,6 +57,7 @@ export default function FilterSidebar({
     if (offline) params.set('offline', 'true')
     if (bpjs) params.set('bpjs', 'true')
     if (focus.length > 0) params.set('focus', focus.join(','))
+    if (clientType) params.set('klien', clientType)
     router.push(`/cari?${params.toString()}`)
     setMobileOpen(false)
   }
@@ -63,6 +68,7 @@ export default function FilterSidebar({
     setOnline(false)
     setOffline(false)
     setBpjs(false)
+    setClientType(undefined)
   }
 
   const activeCount = [
@@ -70,6 +76,7 @@ export default function FilterSidebar({
     online || offline ? 1 : 0,
     bpjs ? 1 : 0,
     focus.length > 0 ? 1 : 0,
+    clientType ? 1 : 0,
   ].reduce((a, b) => a + b, 0)
 
   const chip = (active: boolean) =>
@@ -87,16 +94,41 @@ export default function FilterSidebar({
 
   const body = (
     <div className="space-y-5">
-      {/* Kota */}
+      {/* Klien */}
       <div>
-        <SectionLabel>Kota</SectionLabel>
+        <SectionLabel>Untuk Siapa</SectionLabel>
         <div className="flex flex-wrap gap-[6px]">
-          {kotaList.map((k) => (
-            <button key={k} onClick={() => toggleKota(k)} className={chip(kota.includes(k))}>
-              {k}
+          {(
+            [
+              { label: 'Psikolog Anak', val: 'anak' },
+              { label: 'Psikolog Dewasa', val: 'dewasa' },
+            ] as const
+          ).map(({ label, val }) => (
+            <button
+              key={val}
+              onClick={() => setClientType((prev) => (prev === val ? undefined : val))}
+              className={chip(clientType === val)}
+            >
+              {label}
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Kota */}
+      <div>
+        <SectionLabel>Kota</SectionLabel>
+        {kotaList.length === 0 ? (
+          <p className="text-[12px] text-[#7b6e5c]">Daftar kota belum tersedia.</p>
+        ) : (
+          <div className="flex flex-wrap gap-[6px]">
+            {kotaList.map((k) => (
+              <button key={k} onClick={() => toggleKota(k)} className={chip(kota.includes(k))}>
+                {k}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Format Sesi */}
@@ -162,7 +194,7 @@ export default function FilterSidebar({
       {/* Mobile toggle */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="flex items-center gap-[6px] text-[13px] font-bold text-[#1e3d12] md:hidden"
+        className="flex items-center gap-[6px] rounded-full border-[1.5px] border-[#e5d9c2] bg-[#faf7f0] px-3 py-[6px] text-[13px] font-bold text-[#1e3d12] md:hidden"
       >
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <line x1="4" y1="6" x2="20" y2="6" />
@@ -193,7 +225,7 @@ export default function FilterSidebar({
 
       {/* Desktop sidebar */}
       <div className="hidden md:block">
-        <div className="sticky top-[120px] rounded-2xl border border-[#e5d9c2] bg-[#faf7f0] p-5">
+        <div className="sticky top-[80px] max-h-[calc(100vh-100px)] overflow-y-auto rounded-2xl border border-[#e5d9c2] bg-[#faf7f0] p-5">
           <div className="mb-4 flex items-center justify-between">
             <span className="font-serif text-[18px] text-[#1e3d12]">Filter</span>
             {activeCount > 0 && (

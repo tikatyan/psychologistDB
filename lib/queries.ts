@@ -38,6 +38,7 @@ export async function searchDirectory(params: {
   focus?: string[]
   approach?: string
   ageRange?: string
+  clientType?: 'anak' | 'dewasa'
   format?: string
   feeMax?: number
   type?: 'psikolog' | 'klinik' | 'semua'
@@ -87,8 +88,23 @@ export async function searchDirectory(params: {
       query = query.lte('fee_online_idr_min', params.feeMax)
     }
 
-    const { data } = await query
+    const { data, error } = await query
+    if (error) console.error('[searchDirectory] psikolog query error:', error.message)
     psikologData = (data as Psikolog[]) ?? []
+
+    // Client type (anak / dewasa) — filtered in JS so it is robust to the
+    // exact casing of age_range_handled values stored in the database.
+    if (params.clientType) {
+      const wantAnak = params.clientType === 'anak'
+      psikologData = psikologData.filter((p) =>
+        (p.age_range_handled ?? []).some((a) => {
+          const low = a.toLowerCase()
+          return wantAnak
+            ? low.includes('anak') || low.includes('remaja')
+            : low.includes('dewasa') || low.includes('lansia')
+        })
+      )
+    }
   }
 
   if (type === 'klinik' || type === 'semua') {
@@ -116,8 +132,13 @@ export async function searchDirectory(params: {
       query = query.overlaps('focus', params.focus)
     }
 
-    const { data } = await query
+    const { data, error } = await query
+    if (error) console.error('[searchDirectory] clinics query error:', error.message)
     clinicsData = (data as Clinic[]) ?? []
+
+    // When filtering by client type, clinics have no age data — hide them so
+    // the results stay focused on psikolog that match.
+    if (params.clientType) clinicsData = []
   }
 
   return { psikolog: psikologData, clinics: clinicsData }
@@ -147,6 +168,9 @@ export async function getKotaList(): Promise<string[]> {
     supabase.from('psikolog').select('kota'),
     supabase.from('clinics').select('kota'),
   ])
+
+  if (psikologResult.error) console.error('[getKotaList] psikolog error:', psikologResult.error.message)
+  if (klinikResult.error) console.error('[getKotaList] clinics error:', klinikResult.error.message)
 
   const kotaSet = new Set<string>()
   for (const row of [...(psikologResult.data ?? []), ...(klinikResult.data ?? [])]) {

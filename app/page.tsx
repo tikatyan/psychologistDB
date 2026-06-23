@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { getStats } from '@/lib/queries'
 import SituationGrid from '@/components/SituationGrid'
+import SymptomSearch from '@/components/SymptomSearch'
 
 export default async function HomePage() {
   const stats = await getStats()
@@ -49,30 +50,23 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Divider + search */}
+        {/* Free-text symptom search */}
         <section className="px-6 py-6 sm:px-8">
           <div className="mx-auto max-w-xl">
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px flex-1 bg-[#cdd5c5]" />
-              <span className="text-[12px] font-medium text-[#7b6e5c]">atau cari langsung</span>
+              <span className="text-[12px] font-medium text-[#7b6e5c]">atau ceritakan dengan kata-katamu</span>
               <div className="h-px flex-1 bg-[#cdd5c5]" />
             </div>
-            <form action="/cari" method="GET">
-              <div className="relative flex items-center">
-                <span className="pointer-events-none absolute left-[18px] text-[#7b6e5c]">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                  </svg>
-                </span>
-                <input
-                  name="q"
-                  type="search"
-                  placeholder="Nama psikolog, kota, atau topik yang ingin dibicarakan..."
-                  className="w-full rounded-full border-[1.5px] border-[#cdd5c5] bg-[#e6ece0] py-[13px] pl-[46px] pr-5 font-sans text-[15px] text-[#19290f] outline-none transition placeholder:text-[#7b6e5c] focus:border-[#396025] focus:bg-[#faf7f0]"
-                />
-              </div>
-            </form>
+            <SymptomSearch />
+            <div className="mt-5 text-center">
+              <Link
+                href="/cari"
+                className="text-[13px] font-semibold text-[#396025] underline-offset-2 hover:underline"
+              >
+                Atau cari langsung berdasarkan nama & kota →
+              </Link>
+            </div>
           </div>
         </section>
 
