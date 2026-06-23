@@ -24,23 +24,21 @@ export default function SymptomSearch() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="rounded-[18px] border-[1.5px] border-[#cdd5c5] bg-[#e6ece0] px-4 py-3 transition focus-within:border-[#396025] focus-within:bg-[#faf7f0]">
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={3}
-          placeholder="Misal: akhir-akhir ini aku gampang cemas, susah tidur, dan capek banget sama kerjaan..."
-          className="w-full resize-none bg-transparent font-sans text-[15px] leading-relaxed text-[#19290f] outline-none placeholder:text-[#7b6e5c]"
-        />
-      </div>
-      <p className="mt-2 px-1 text-[12px] leading-relaxed text-[#7b6e5c]">
-        Gak perlu tahu nama kondisinya — ceritakan saja apa yang kamu rasakan.
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        rows={3}
+        placeholder="Misal: akhir-akhir ini aku gampang cemas, susah tidur, dan capek banget sama kerjaan..."
+        className="w-full resize-none rounded-[22px] border-[1.5px] border-[#cdd5c5] bg-[#e6ece0] px-5 py-4 font-sans text-[15px] leading-relaxed text-[#19290f] outline-none transition placeholder:text-[#a09585] focus:border-[#396025] focus:bg-[#faf7f0]"
+      />
+      <p className="px-1 text-[12px] leading-relaxed text-[#a09585]">
+        Gak perlu tahu nama kondisinya — ceritakan aja apa yang kamu rasakan.
       </p>
       <button
         type="submit"
         disabled={loading || !text.trim()}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[#1e3d12] py-[13px] text-[14px] font-bold text-white transition hover:bg-[#396025] disabled:opacity-40"
+        className="flex w-full items-center justify-center gap-2 rounded-full bg-[#1e3d12] py-[13px] text-[14px] font-bold text-white transition hover:bg-[#396025] disabled:opacity-40"
       >
         {loading ? (
           <>

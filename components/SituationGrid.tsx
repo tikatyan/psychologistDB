@@ -24,7 +24,7 @@ export default function SituationGrid() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-[9px]">
+    <div className="flex flex-wrap gap-[10px]">
       {SITUATIONS.map((s, i) => {
         const isLoading = loadingIdx === i
         const isDimmed = loadingIdx !== null && loadingIdx !== i
@@ -33,12 +33,12 @@ export default function SituationGrid() {
             key={s.label}
             onClick={() => handleClick(i, s.focus)}
             disabled={loadingIdx !== null}
-            className={`rounded-[14px] border-[1.5px] px-4 py-[15px] text-left text-[14px] font-semibold leading-snug tracking-tight transition-all ${
+            className={`rounded-full px-[18px] py-[10px] font-serif text-[17px] tracking-tight transition-all ${
               isLoading
-                ? 'border-[#1e3d12] bg-[#1e3d12] text-white scale-[0.98]'
+                ? 'bg-[#1e3d12] text-white scale-[0.97]'
                 : isDimmed
-                ? 'border-[#cdd5c5] bg-[#e6ece0] text-[#19290f] opacity-40'
-                : 'border-[#cdd5c5] bg-[#e6ece0] text-[#19290f] hover:bg-[#dde5d7] active:scale-[0.98]'
+                ? 'bg-[#dde5d7] text-[#19290f] opacity-40'
+                : 'bg-[#e0e8da] text-[#19290f] hover:bg-[#d0dbc8] active:scale-[0.97]'
             }`}
           >
             {isLoading ? (

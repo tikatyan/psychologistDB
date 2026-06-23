@@ -7,136 +7,140 @@ export default async function HomePage() {
   const stats = await getStats()
 
   return (
-    <main>
-      {/* Hero — illustration anchored right, text floats clearly on the left */}
+    <main className="bg-[#f5f8f2]">
+
+      {/* ── Hero ─────────────────────────────────────────────── */}
       <section
         className="relative flex items-center overflow-hidden"
         style={{
-          minHeight: 420,
+          minHeight: 500,
           backgroundImage: 'url(/hero.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'right center',
         }}
       >
-        {/* Left-to-right gradient so text area stays clean */}
+        {/* Soft left-to-right fade so text stays crisp */}
         <div
-          className="pointer-events-none absolute inset-0 z-[1]"
+          className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'linear-gradient(to right, #f0f4eb 30%, rgba(240,244,235,0.85) 50%, rgba(240,244,235,0.2) 70%, transparent 90%)',
+              'linear-gradient(to right, #f5f8f2 28%, rgba(245,248,242,0.88) 48%, rgba(245,248,242,0.15) 68%, transparent 85%)',
           }}
         />
-        <div className="relative z-[3] mx-auto w-full max-w-5xl px-6 py-16 sm:px-8">
-          <div className="max-w-md">
-            <h1 className="mb-3 font-serif text-5xl leading-[1.05] tracking-tight text-[#19290f] sm:text-6xl">
+        <div className="relative mx-auto w-full max-w-5xl px-6 py-16 sm:px-10">
+          <div className="max-w-[480px]">
+            {/* Decorative accent */}
+            <div className="mb-5 flex gap-1.5">
+              <span className="h-[6px] w-[6px] rounded-full bg-[#9ec485]" />
+              <span className="h-[6px] w-[6px] rounded-full bg-[#396025]" />
+              <span className="h-[6px] w-[6px] rounded-full bg-[#1e3d12]" />
+            </div>
+            <h1 className="mb-4 font-serif text-5xl leading-[1.08] tracking-tight text-[#19290f] sm:text-[58px]">
               Kamu tidak harus
               <br />
               <em className="text-[#1e3d12]">melaluinya sendirian.</em>
             </h1>
-            <p className="text-[14px] leading-relaxed text-[#7b6e5c]">
-              Temukan psikolog dan klinik kesehatan mental di seluruh Indonesia — gratis, terbuka, bisa diakses siapa saja.
+            <p className="text-[15px] leading-relaxed text-[#6b5f4f]">
+              Temukan psikolog dan klinik kesehatan mental di seluruh Indonesia —
+              gratis, terbuka, bisa diakses siapa saja.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Content block */}
-      <div style={{ background: '#f0f4eb' }}>
+      {/* ── "Lagi ngerasa apa?" ──────────────────────────────── */}
+      <section className="px-6 pb-4 pt-12 sm:px-10">
+        <div className="mx-auto max-w-xl">
+          <p className="mb-1 font-serif text-[13px] italic text-[#7b6e5c]">lagi ngerasa apa?</p>
+          <h2 className="mb-6 font-serif text-[28px] leading-tight tracking-tight text-[#19290f]">
+            Mulai dari sini.
+          </h2>
+          <SituationGrid />
+        </div>
+      </section>
 
-        {/* Situation selector — no bottom border so it flows into symptom search */}
-        <section className="px-6 pt-8 pb-5 sm:px-8">
-          <div className="mx-auto max-w-xl">
-            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.1em] text-[#7b6e5c]">
-              Apa yang sedang kamu rasakan?
-            </p>
-            <SituationGrid />
-          </div>
-        </section>
+      {/* ── Free-text ────────────────────────────────────────── */}
+      <section className="px-6 pb-14 pt-8 sm:px-10">
+        <div className="mx-auto max-w-xl">
+          <p className="mb-4 font-serif text-[18px] italic leading-snug text-[#7b6e5c]">
+            atau ceritakan dengan kata-katamu sendiri
+          </p>
+          <SymptomSearch />
+        </div>
+      </section>
 
-        {/* Free-text symptom search — flows naturally after cards */}
-        <section className="px-6 pb-8 sm:px-8">
-          <div className="mx-auto max-w-xl">
-            <p className="mb-3 text-center text-[12px] font-medium text-[#7b6e5c]">
-              atau ceritakan dengan kata-katamu
-            </p>
-            <SymptomSearch />
-          </div>
-        </section>
+      {/* ── Stats ────────────────────────────────────────────── */}
+      <section className="bg-[#1e3d12] px-6 py-14 sm:px-10">
+        <div className="mx-auto max-w-xl">
+          <p className="mb-1 font-serif text-[13px] italic text-[#9ec485]/60">direktori kami</p>
+          <h2 className="mb-10 font-serif text-[30px] leading-tight tracking-tight text-white">
+            Ribuan pilihan, <em className="text-[#9ec485]">satu tempat.</em>
+          </h2>
 
-        {/* Stats — floating editorial style */}
-        <section className="bg-[#1e3d12] px-6 py-10 sm:px-8">
-          <div className="mx-auto max-w-xl">
-            <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#9ec485]/60">
-              Direktori kami
-            </p>
-            <h2 className="mb-8 font-serif text-[26px] leading-tight tracking-tight text-white">
-              Ribuan pilihan, <em className="text-[#9ec485]">satu tempat.</em>
-            </h2>
-            <div className="flex gap-10">
-              <div>
-                <span className="block font-serif text-[48px] leading-none tracking-tight text-white">
-                  {stats.totalPsikolog}
-                </span>
-                <span className="mt-1 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#9ec485]/70">
-                  Psikolog
-                </span>
-              </div>
-              <div>
-                <span className="block font-serif text-[48px] leading-none tracking-tight text-white">
-                  {stats.totalKota}
-                </span>
-                <span className="mt-1 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#9ec485]/70">
-                  Kota
-                </span>
-              </div>
-              <div>
-                <span className="block font-serif text-[48px] leading-none tracking-tight text-white">
-                  {stats.totalKliniks}
-                </span>
-                <span className="mt-1 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#9ec485]/70">
-                  Klinik
-                </span>
-              </div>
+          <div className="flex gap-12">
+            <div>
+              <span className="block font-serif text-[54px] leading-none tracking-tight text-white">
+                {stats.totalPsikolog}
+              </span>
+              <span className="mt-1.5 block font-serif text-[14px] italic text-[#9ec485]/70">
+                psikolog
+              </span>
             </div>
-            <p className="mt-8 text-[13px] text-white/50">
-              Tahu psikolog yang belum ada di daftar ini?{' '}
-              <Link
-                href="/tambahkan"
-                className="font-bold text-[#9ec485] transition hover:text-white"
-              >
-                Bantu tambahkan →
-              </Link>
-            </p>
+            <div>
+              <span className="block font-serif text-[54px] leading-none tracking-tight text-white">
+                {stats.totalKota}
+              </span>
+              <span className="mt-1.5 block font-serif text-[14px] italic text-[#9ec485]/70">
+                kota
+              </span>
+            </div>
+            <div>
+              <span className="block font-serif text-[54px] leading-none tracking-tight text-white">
+                {stats.totalKliniks}
+              </span>
+              <span className="mt-1.5 block font-serif text-[14px] italic text-[#9ec485]/70">
+                klinik
+              </span>
+            </div>
           </div>
-        </section>
 
-        {/* About section */}
-        <section className="bg-[#f0f4eb] px-6 py-10 sm:px-8">
-          <div className="mx-auto max-w-xl">
-            <p className="mb-[10px] text-[11px] font-bold uppercase tracking-[0.12em] text-[#7b6e5c]">
-              Tentang TemukanPsikolog
-            </p>
-            <h2 className="mb-4 font-serif text-[26px] leading-tight tracking-tight text-[#1e3d12]">
-              Dibuat bersama,
-              <br />
-              <em>untuk semua.</em>
-            </h2>
-            <p className="text-[13.5px] leading-[1.72] text-[#7b6e5c]">
-              TemukanPsikolog ada karena mencari psikolog yang tepat di Indonesia itu tidak semestinya serumit ini.
-            </p>
-            <p className="mt-[10px] text-[13.5px] leading-[1.72] text-[#7b6e5c]">
-              Kami tidak menjual layanan konseling. Kami hanya mempermudah kamu menemukan orang yang bisa membantu.
-            </p>
+          <p className="mt-10 text-[13px] leading-relaxed text-white/40">
+            Tahu psikolog yang belum ada di daftar ini?{' '}
             <Link
-              href="/tentang"
-              className="mt-5 inline-block text-[13px] font-semibold text-[#396025] transition hover:text-[#1e3d12]"
+              href="/tambahkan"
+              className="font-semibold text-[#9ec485] transition hover:text-white"
             >
-              Selengkapnya →
+              Bantu tambahkan →
             </Link>
-          </div>
-        </section>
+          </p>
+        </div>
+      </section>
 
-      </div>
+      {/* ── About ────────────────────────────────────────────── */}
+      <section className="px-6 py-14 sm:px-10">
+        <div className="mx-auto max-w-xl">
+          <p className="mb-1 font-serif text-[13px] italic text-[#7b6e5c]">tentang kami</p>
+          <h2 className="mb-5 font-serif text-[30px] leading-tight tracking-tight text-[#19290f]">
+            Dibuat bersama, <em className="text-[#396025]">untuk semua.</em>
+          </h2>
+          <p className="text-[14px] leading-[1.8] text-[#7b6e5c]">
+            TemukanPsikolog ada karena mencari psikolog yang tepat di Indonesia itu
+            tidak semestinya serumit ini. Kami kumpulkan informasinya di satu tempat —
+            terbuka, gratis, dan terus diperbarui bersama komunitas.
+          </p>
+          <p className="mt-3 text-[14px] leading-[1.8] text-[#7b6e5c]">
+            Kami tidak menjual layanan konseling. Kami hanya mempermudah kamu
+            menemukan orang yang bisa membantu.
+          </p>
+          <Link
+            href="/tentang"
+            className="mt-5 inline-block font-serif text-[15px] italic text-[#396025] transition hover:text-[#1e3d12]"
+          >
+            Selengkapnya →
+          </Link>
+        </div>
+      </section>
+
     </main>
   )
 }
